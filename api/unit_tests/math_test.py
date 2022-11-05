@@ -27,3 +27,11 @@ def test_solve_multiple_2():
 def test_simplify():
     """Test the simplify function with a simple math block"""
     assert calculate_math.calculate_math(r"simplify(2x+3x)") == '5 x'
+
+def test_expand():
+    """Test the expand function with a simple math block"""
+    assert calculate_math.calculate_math(r"expand((x+1)^2)") == r'x^{2} + 2 x + 1'
+
+def test_factor():
+    """Test the factor function with a simple math block"""
+    assert calculate_math.calculate_math(r"factor(x^2+2x+1)") == '\\left(x + 1\\right)^{2}'

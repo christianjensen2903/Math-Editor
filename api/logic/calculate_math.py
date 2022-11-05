@@ -6,6 +6,8 @@ import re
 regexes = {
     'solve': re.compile(r"^solve\((.*?)(,(.*))?\)$"),
     'simplify': re.compile(r"^simplify\((.+)\)$"),
+    'expand': re.compile(r"^expand\((.+)\)$"),
+    'factor': re.compile(r"^factor\((.+)\)$"),
 }
 
 
@@ -25,10 +27,33 @@ def calculate_helper(expression: str) -> str:
         expression = solve(expression)
     elif regexes['simplify'].match(expression):
         expression = simplify(expression)
+    elif regexes['expand'].match(expression):
+        expression = expand(expression)
+    elif regexes['factor'].match(expression):
+        expression = factor(expression)
     else: 
         expression = latex_to_sympy(expression).doit()
 
     return expression
+
+
+def factor(expression: str) -> str:
+    """Factor an expression"""
+    match = regexes['factor'].match(expression)
+    expression = match.group(1)
+    expression = calculate_helper(expression)
+    expression = sympy.factor(expression)
+    return expression
+
+
+def expand(expression: str) -> str:
+    """Expand an expression"""
+    match = regexes['expand'].match(expression)
+    expression = match.group(1)
+    expression = calculate_helper(expression)
+    expression = sympy.expand(expression)
+    return expression
+
 
 
 def simplify(expression: str) -> str:
