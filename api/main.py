@@ -1,11 +1,3 @@
-import sys
-
-# sys.path.remove('/Users/christianjensen/Library/CloudStorage/OneDrive-UniversityofCopenhagen/2 - Projects/Math Editor/api/..')
-sys.path.insert(0, '/Users/christianjensen/Library/CloudStorage/OneDrive-UniversityofCopenhagen/2 - Projects/Math Editor/api/')
-sys.path.insert(0, '/Users/christianjensen/Library/CloudStorage/OneDrive-UniversityofCopenhagen/2 - Projects/Math Editor/api/model/')
-print(sys.path)
-
-
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 from html import html
