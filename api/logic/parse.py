@@ -1,8 +1,6 @@
 from model.BlockModel import BlockModel
 from typing import List
 import json
-import latex2sympy2
-import re
 
 def parse_input(input: str) -> List[BlockModel]:
     """Parse the input json into a list of blocks"""
@@ -16,7 +14,3 @@ def parse_output(blocks: List[BlockModel]) -> str:
     """Parse the output json from a list of blocks"""
     return json.dumps([block.dict() for block in blocks])
 
-
-def latex_to_sympy(latex: str) -> str:
-    """Convert latex to sympy"""
-    return latex2sympy2.latex2sympy(latex)
