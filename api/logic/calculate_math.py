@@ -5,6 +5,7 @@ import re
 
 regexes = {
     'solve': re.compile(r"^solve\((.*?)(,(.*))?\)$"),
+    'simplify': re.compile(r"^simplify\((.+)\)$"),
 }
 
 
@@ -22,9 +23,20 @@ def calculate_helper(expression: str) -> str:
 
     if regexes['solve'].match(expression):
         expression = solve(expression)
+    elif regexes['simplify'].match(expression):
+        expression = simplify(expression)
     else: 
         expression = latex_to_sympy(expression).doit()
 
+    return expression
+
+
+def simplify(expression: str) -> str:
+    """Simplify an expression"""
+    match = regexes['simplify'].match(expression)
+    expression = match.group(1)
+    expression = calculate_helper(expression)
+    expression = sympy.simplify(expression)
     return expression
 
 

@@ -19,3 +19,11 @@ def test_solve():
 def test_solve_multiple():
     """Test the solve function with a simple math block with multiple arguments"""
     assert calculate_math.calculate_math(r"solve(4x+8, x)") == '\\left[ -2\\right]'
+
+def test_solve_multiple_2():
+    """Test the solve function with a simple math block with multiple arguments"""
+    assert calculate_math.calculate_math(r"solve(4x+8, y)") == '\\left[ \\right]'
+
+def test_simplify():
+    """Test the simplify function with a simple math block"""
+    assert calculate_math.calculate_math(r"simplify(2x+3x)") == '5 x'
