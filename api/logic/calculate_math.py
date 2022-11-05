@@ -1,5 +1,8 @@
-
+from logic import parse
+import sympy
 
 def calculate_math(content: str) -> str:
     """Calculate the result of a math block"""
-    return str(eval(content))
+    expression = parse.latex_to_sympy(content)
+
+    return str(expression.evalf())
