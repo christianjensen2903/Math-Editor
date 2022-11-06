@@ -7,6 +7,7 @@ html = """
     <body>
         <h1>WebSocket Chat</h1>
         <form action="" onsubmit="sendMessage(event)">
+            <input type="text" id="cell_type" autocomplete="off" />
             <input type="text" id="messageText" autocomplete="off"/>
             <button>Send</button>
         </form>
@@ -22,9 +23,9 @@ html = """
                 messages.appendChild(message)
             };
             function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                ws.send(input.value)
-                input.value = ''
+                var cell_type = document.getElementById('cell_type').value
+                var content = document.getElementById("messageText").value
+                ws.send([cell_type, content])
                 event.preventDefault()
             }
         </script>

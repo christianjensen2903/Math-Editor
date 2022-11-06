@@ -17,14 +17,15 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
+        data = data.split(",")
+        cell_type = data[0]
+        content = data[1]
         json_data = f"""[{{
-            "type": "math",
-            "content": "{data}",
+            "type": "{cell_type}",
+            "content": "{content}",
             "result": null,
             "last_edited": "2021-01-01T00:00:00.000000",
             "last_calculated": null
             }}]"""
 
         await websocket.send_text(process.update(json_data))
-        
-        # await websocket.send_text(f"Message text was: {data}")
