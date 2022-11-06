@@ -47,5 +47,17 @@ def test_is_equal_false():
 
 
 def test_solve_assignment():
-    """Test the that assignemt of variables works for solve"""
+    """Test the that assignment of variables works for solve"""
     assert calculate_math.calculate_math(r"solve(2x+3y=5x, x)") == 'y'
+
+def test_define_variable():
+    """Test the that define of variables works"""
+    assert calculate_math.calculate_math(r"x:=5y") == '\\mathtt{\\text{x = 5*y}}'
+
+def test_define_function():
+    """Test the that define of functions works"""
+    assert calculate_math.calculate_math(r"f(x):=5x") == '\\mathtt{\\text{f(x) = 5*x}}'
+
+def test_define_function_2():
+    """Test the that define of functions works for 2 variables"""
+    assert calculate_math.calculate_math(r"f(x,y):=5x+y") == '\\mathtt{\\text{f(x,y) = 5*x + y}}'

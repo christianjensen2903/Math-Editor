@@ -13,6 +13,7 @@ regexes = {
     'expand': re.compile(r"^expand\((.+)\)$"),
     'factor': re.compile(r"^factor\((.+)\)$"),
     'is_equal': re.compile(r"^is_equal\((.+),(.+)\)$"),
+    'define': re.compile(r"^(.+?)(\((.+)\))?:=(.*)$")
 }
 
 
@@ -38,10 +39,29 @@ def calculate_helper(expression: str) -> str:
         expression = factor(expression)
     elif regexes['is_equal'].match(expression):
         expression = is_equal(expression)
+    elif regexes['define'].match(expression):
+        expression = define(expression)
     else: 
         expression = latex_to_sympy(expression).doit()
 
     return expression
+
+
+
+def define(expression: str) -> str:
+    """Assign an expression to a variable"""
+    match = regexes['define'].match(expression)
+    variable = match.group(1)
+    arguments = match.group(3)
+    expression = match.group(4)
+    expression = calculate_helper(expression)
+    
+    if arguments is None:
+        SAVED_VARIABLES[variable] = sympy.lambdify(expression.free_symbols, expression)
+        return f'{variable} = {expression}'
+    else:
+        SAVED_VARIABLES[variable] = sympy.lambdify(sympy.symbols(arguments), expression)
+        return f'{variable}({arguments}) = {expression}'
 
 
 def is_equal(expression: str) -> str:
