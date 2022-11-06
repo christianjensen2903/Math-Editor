@@ -25,7 +25,7 @@ html = """
             function sendMessage(event) {
                 var cell_type = document.getElementById('cell_type').value
                 var content = document.getElementById("messageText").value
-                ws.send([cell_type, content])
+                ws.send(cell_type + ";" + content);
                 event.preventDefault()
             }
         </script>

@@ -17,7 +17,7 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
-        data = data.split(",")
+        data = data.split(";")
         cell_type = data[0]
         content = data[1]
         json_data = f"""[{{

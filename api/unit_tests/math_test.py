@@ -35,3 +35,12 @@ def test_expand():
 def test_factor():
     """Test the factor function with a simple math block"""
     assert calculate_math.calculate_math(r"factor(x^2+2x+1)") == '\\left(x + 1\\right)^{2}'
+
+
+def test_is_equal():
+    """Test the is_equal function with a simple math block"""
+    assert calculate_math.calculate_math(r"is_equal(2x+3x, 5x)") == '\\text{True}'
+
+def test_is_equal_false():
+    """Test the is_equal function with a simple math block"""
+    assert calculate_math.calculate_math(r"is_equal(2x+3x, 6x)") == '\\text{False}'

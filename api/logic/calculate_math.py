@@ -1,6 +1,10 @@
 import sympy
 import latex2sympy2
 import re
+from logic.SAVED_VARIABLES import SAVED_VARIABLES
+
+
+# TODO: Use SAVED_VARIABLES to store variables and calculate them
 
 
 regexes = {
@@ -8,6 +12,7 @@ regexes = {
     'simplify': re.compile(r"^simplify\((.+)\)$"),
     'expand': re.compile(r"^expand\((.+)\)$"),
     'factor': re.compile(r"^factor\((.+)\)$"),
+    'is_equal': re.compile(r"^is_equal\((.+),(.+)\)$"),
 }
 
 
@@ -31,11 +36,23 @@ def calculate_helper(expression: str) -> str:
         expression = expand(expression)
     elif regexes['factor'].match(expression):
         expression = factor(expression)
+    elif regexes['is_equal'].match(expression):
+        expression = is_equal(expression)
     else: 
         expression = latex_to_sympy(expression).doit()
 
     return expression
 
+
+def is_equal(expression: str) -> str:
+    """Check if two expressions are equal"""
+    match = regexes['is_equal'].match(expression)
+    expression1 = match.group(1)
+    expression2 = match.group(2)
+    expression1 = calculate_helper(expression1)
+    expression2 = calculate_helper(expression2)
+    result = sympy.simplify(f'{expression1} - {expression2}') # Simplify the difference of the two expressions
+    return result == 0
 
 def factor(expression: str) -> str:
     """Factor an expression"""
