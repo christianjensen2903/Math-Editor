@@ -14,11 +14,11 @@ def test_calculate_math_latex():
 
 def test_solve():
     """Test the solve function with a simple math block"""
-    assert calculate_math.calculate_math(r"solve(4x+8)") == '\\left[ -2\\right]'
+    assert calculate_math.calculate_math(r"solve(4x+8)") == '-2'
 
 def test_solve_multiple():
     """Test the solve function with a simple math block with multiple arguments"""
-    assert calculate_math.calculate_math(r"solve(4x+8, x)") == '\\left[ -2\\right]'
+    assert calculate_math.calculate_math(r"solve(4x+8, x)") == '-2'
 
 def test_solve_multiple_2():
     """Test the solve function with a simple math block with multiple arguments"""
@@ -44,3 +44,8 @@ def test_is_equal():
 def test_is_equal_false():
     """Test the is_equal function with a simple math block"""
     assert calculate_math.calculate_math(r"is_equal(2x+3x, 6x)") == '\\text{False}'
+
+
+def test_solve_assignment():
+    """Test the that assignemt of variables works for solve"""
+    assert calculate_math.calculate_math(r"solve(2x+3y=5x, x)") == 'y'

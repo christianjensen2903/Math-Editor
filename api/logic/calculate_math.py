@@ -91,8 +91,17 @@ def solve(expression: str) -> str:
     if match.groups()[2] is not None: # If the expression contains a second argument
         variable = match.group(3)
         expression = sympy.solve(expression, variable)
+        if len(expression) == 1: # If there is only one solution unpack it
+            expression = expression[0]
+            # save the solution to the variable
+            SAVED_VARIABLES[variable] = sympy.lambdify(expression.free_symbols, expression)
+        else:
+            SAVED_VARIABLES[variable] = [sympy.lambdify(expr.free_symbols, expr) for expr in expression]
     else:
         expression = sympy.solve(expression)
+
+        if len(expression) == 1: # If there is only one solution unpack it
+            expression = expression[0]
 
     return expression
 
