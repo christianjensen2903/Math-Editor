@@ -3,7 +3,6 @@ import latex2sympy2
 import re
 import GLOBALS
 import uuid
-from fastapi import Request
 
 
 # TODO: Use SAVED_VARIABLES to store variables and calculate them
@@ -95,11 +94,6 @@ def plot(expression: str) -> str:
         \\includegraphics[width=0.5\\textwidth]{GLOBALS.API_URL + '/images/' + image_id + '.png'}
     \\end{{figure}}
     """
-    
-
-    
-
-    
 
 
 def define(expression: str) -> str:
@@ -111,7 +105,10 @@ def define(expression: str) -> str:
     expression = calculate_helper(expression)
     
     if arguments is None:
-        GLOBALS.SAVED_VARIABLES[function_name] = sympy.lambdify(expression.free_symbols, expression)
+        if len(expression.free_symbols) == 0: # expression is constant
+            GLOBALS.SAVED_VARIABLES[function_name] = expression
+        else: # expression is not constant
+            GLOBALS.SAVED_VARIABLES[function_name] = sympy.lambdify(expression.free_symbols, expression)
         return f'{function_name} = {expression}'
     else:
         GLOBALS.SAVED_VARIABLES[function_name] = sympy.lambdify(sympy.symbols(arguments), expression)

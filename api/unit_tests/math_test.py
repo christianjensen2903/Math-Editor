@@ -58,6 +58,10 @@ def test_define_function():
     """Test the that define of functions works"""
     assert calculate_math.calculate_math(r"f(x):=5x") == '\\mathtt{\\text{f(x) = 5*x}}'
 
+def test_define_function_constant():
+    """Test the that define of functions works for constant functions"""
+    assert calculate_math.calculate_math(r"x:=5") == '\\mathtt{\\text{x = 5}}'
+
 def test_define_function_2():
     """Test the that define of functions works for 2 variables"""
     assert calculate_math.calculate_math(r"f(x,y):=5x+y") == '\\mathtt{\\text{f(x,y) = 5*x + y}}'
