@@ -5,10 +5,6 @@ import GLOBALS
 import uuid
 
 
-# TODO: Use SAVED_VARIABLES to store variables and calculate them
-# TODO: if constant (no free_variables) save the evaluated expression
-
-
 regexes = {
     'solve': re.compile(r"^solve\((?P<expression>.*?)(,(?P<solve_for>.*))?\)$"),
     'simplify': re.compile(r"^simplify\((?P<expression>.+)\)$"),
@@ -184,7 +180,7 @@ def latex_to_sympy(latex: str) -> str:
     if latex.find('=') != -1: 
         latex = latex.replace('=', '-(') + ')'
 
-    return latex2sympy2.latex2sympy(latex).doit()
+    return latex2sympy2.latex2sympy(latex).doit().subs(GLOBALS.SAVED_VARIABLES)
 
 
 def sympy_to_latex(expression: str) -> str:

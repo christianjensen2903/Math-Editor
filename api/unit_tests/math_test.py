@@ -64,4 +64,4 @@ def test_define_function_constant():
 
 def test_define_function_2():
     """Test the that define of functions works for 2 variables"""
-    assert calculate_math.calculate_math(r"f(x,y):=5x+y") == '\\mathtt{\\text{f(x,y) = 5*x + y}}'
+    assert calculate_math.calculate_math(r"f(y,z):=5z+y") == '\\mathtt{\\text{f(y,z) = y + 5*z}}'
