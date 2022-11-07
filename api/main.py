@@ -39,4 +39,4 @@ async def websocket_endpoint(websocket: WebSocket):
 
 @app.get("/images/{image_id}")
 async def get_image(image_id: str):
-    return FileResponse(f'static/images/{image_id}.png')
+    return FileResponse(f'images/{image_id}.png')
