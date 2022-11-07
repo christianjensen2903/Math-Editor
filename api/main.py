@@ -1,10 +1,16 @@
-from fastapi import FastAPI, WebSocket
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, WebSocket, Request
+from fastapi.responses import HTMLResponse, FileResponse
 from html import html
 from logic import process
+from fastapi.staticfiles import StaticFiles
+
+
+# Get the environment variables
+# print(os.getenv("API_URL"))
 
 
 app = FastAPI()
+
 
 
 @app.get("/")
@@ -29,3 +35,8 @@ async def websocket_endpoint(websocket: WebSocket):
             }}]"""
 
         await websocket.send_text(process.update(json_data))
+
+
+@app.get("/images/{image_id}")
+async def get_image(image_id: str):
+    return FileResponse(f'static/images/{image_id}.png')

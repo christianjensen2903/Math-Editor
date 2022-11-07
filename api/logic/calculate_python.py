@@ -1,5 +1,5 @@
 import re
-from logic.SAVED_VARIABLES import SAVED_VARIABLES
+import GLOBALS
 import traceback
 
 def calculate_python(code: str) -> str:
@@ -20,10 +20,10 @@ def calculate_python(code: str) -> str:
             if match:
                 variable = match.group('variable')
                 expression = match.group('expression')
-                SAVED_VARIABLES[variable] = eval(expression, SAVED_VARIABLES)
+                GLOBALS.SAVED_VARIABLES[variable] = eval(expression, GLOBALS.SAVED_VARIABLES)
             else:
                 # output += str(eval(line, SAVED_VARIABLES)) + '\n'
-                print(eval(line, SAVED_VARIABLES))
+                print(eval(line, GLOBALS.SAVED_VARIABLES))
             
     except Exception as e:
         print(traceback.format_exc())

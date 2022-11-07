@@ -1,10 +1,16 @@
 import sympy
 import latex2sympy2
 import re
-from logic.SAVED_VARIABLES import SAVED_VARIABLES
+import GLOBALS
+import uuid
+from fastapi import Request
 
 
 # TODO: Use SAVED_VARIABLES to store variables and calculate them
+# TODO: if constant (no free_variables) save the evaluated expression
+# TODO: Plot both 2D and 3D
+# TODO: Plot both f(x)=.., x=.. and x/y=.. (maybe use solve if = is in the expression)
+# TODO: Add names to regex groups
 
 
 regexes = {
@@ -13,14 +19,19 @@ regexes = {
     'expand': re.compile(r"^expand\((.+)\)$"),
     'factor': re.compile(r"^factor\((.+)\)$"),
     'is_equal': re.compile(r"^is_equal\((.+),(.+)\)$"),
-    'define': re.compile(r"^(.+?)(\((.+)\))?:=(.*)$")
+    'define': re.compile(r"^(.+?)(\((.+)\))?:=(.*)$"),
+    'plot': re.compile(r"^plot\((?P<expression>(?P<left_expression>.+?)(=(?P<right_expression>.+))?)\)$")
 }
 
 
 def calculate_math(expression: str) -> str:
     """Calculate the result of a math expression"""
 
-    expression = calculate_helper(expression)
+    # Top level functions
+    if regexes['plot'].match(expression):
+        return plot(expression)
+    else: # functions to be called recursively
+        expression = calculate_helper(expression)
 
     return sympy_to_latex(expression)
 
@@ -42,10 +53,54 @@ def calculate_helper(expression: str) -> str:
     elif regexes['define'].match(expression):
         expression = define(expression)
     else: 
-        expression = latex_to_sympy(expression).doit()
+        expression = latex_to_sympy(expression)
 
     return expression
 
+
+# TODO: Fix disconnection of websocket when adding image
+def plot(expression: str) -> str:
+    """Plot an expression"""
+    # Regex = left_expression = right_expression
+
+    match = regexes['plot'].match(expression)
+    expression = match.group('expression') # whole expression
+    left_expression = match.group('left_expression') # left side of equal sign
+    right_expression = match.group('right_expression') # right side of equal sign
+
+    if right_expression: # there is an equal sign
+        left_expression = latex_to_sympy(left_expression)
+        if len(left_expression.free_symbols) > 1: # more than one variable on left side solve for one of them
+            expression = sympy.solve(latex_to_sympy(expression))
+        elif len(left_expression.free_symbols) == 1: # one variable on left side plot the right side
+            expression = latex_to_sympy(right_expression)
+        else: # no variables on left side plot the right side solve expression and plot
+            expression = sympy.solve(latex_to_sympy(expression))
+    else: # no equal sign
+        expression = latex_to_sympy(expression)
+
+    image_id = str(uuid.uuid4())
+    
+    if isinstance(expression, list): # expression is a list of solutions
+        sympy.plot(expression[0], show=False).save(f'images/{image_id}.png')
+    else:
+        if len(expression.free_symbols) == 2: # 3D plot
+            sympy.plotting.plot3d(expression, show=False).save(f'images/{image_id}.png')
+        else: # 2D plot
+            sympy.plot(expression, show=False).save(f'images/{image_id}.png')
+
+    # return static file as latex image
+    return f"""
+    \\begin{{figure}}[h]
+        \\centering
+        \\includegraphics[width=0.5\\textwidth]{GLOBALS.API_URL + '/images/' + image_id + '.png'}
+    \\end{{figure}}
+    """
+    
+
+    
+
+    
 
 
 def define(expression: str) -> str:
@@ -57,10 +112,10 @@ def define(expression: str) -> str:
     expression = calculate_helper(expression)
     
     if arguments is None:
-        SAVED_VARIABLES[variable] = sympy.lambdify(expression.free_symbols, expression)
+        GLOBALS.SAVED_VARIABLES[variable] = sympy.lambdify(expression.free_symbols, expression)
         return f'{variable} = {expression}'
     else:
-        SAVED_VARIABLES[variable] = sympy.lambdify(sympy.symbols(arguments), expression)
+        GLOBALS.SAVED_VARIABLES[variable] = sympy.lambdify(sympy.symbols(arguments), expression)
         return f'{variable}({arguments}) = {expression}'
 
 
@@ -114,9 +169,9 @@ def solve(expression: str) -> str:
         if len(expression) == 1: # If there is only one solution unpack it
             expression = expression[0]
             # save the solution to the variable
-            SAVED_VARIABLES[variable] = sympy.lambdify(expression.free_symbols, expression)
+            GLOBALS.SAVED_VARIABLES[variable] = sympy.lambdify(expression.free_symbols, expression)
         else:
-            SAVED_VARIABLES[variable] = [sympy.lambdify(expr.free_symbols, expr) for expr in expression]
+            GLOBALS.SAVED_VARIABLES[variable] = [sympy.lambdify(expr.free_symbols, expr) for expr in expression]
     else:
         expression = sympy.solve(expression)
 
@@ -133,7 +188,7 @@ def latex_to_sympy(latex: str) -> str:
     if latex.find('=') != -1: 
         latex = latex.replace('=', '-(') + ')'
 
-    return latex2sympy2.latex2sympy(latex)
+    return latex2sympy2.latex2sympy(latex).doit()
 
 
 def sympy_to_latex(expression: str) -> str:
