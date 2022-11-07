@@ -8,18 +8,15 @@ from fastapi import Request
 
 # TODO: Use SAVED_VARIABLES to store variables and calculate them
 # TODO: if constant (no free_variables) save the evaluated expression
-# TODO: Plot both 2D and 3D
-# TODO: Plot both f(x)=.., x=.. and x/y=.. (maybe use solve if = is in the expression)
-# TODO: Add names to regex groups
 
 
 regexes = {
-    'solve': re.compile(r"^solve\((.*?)(,(.*))?\)$"),
-    'simplify': re.compile(r"^simplify\((.+)\)$"),
-    'expand': re.compile(r"^expand\((.+)\)$"),
-    'factor': re.compile(r"^factor\((.+)\)$"),
-    'is_equal': re.compile(r"^is_equal\((.+),(.+)\)$"),
-    'define': re.compile(r"^(.+?)(\((.+)\))?:=(.*)$"),
+    'solve': re.compile(r"^solve\((?P<expression>.*?)(,(?P<solve_for>.*))?\)$"),
+    'simplify': re.compile(r"^simplify\((?P<expression>.+)\)$"),
+    'expand': re.compile(r"^expand\((?P<expression>.+)\)$"),
+    'factor': re.compile(r"^factor\((?P<expression>.+)\)$"),
+    'is_equal': re.compile(r"^is_equal\((?P<left_expression>.+),(?P<right_expression>.+)\)$"),
+    'define': re.compile(r"^(?P<function_name>.+?)(\((?P<arguments>.+)\))?:=(?P<expression>.*)$"),
     'plot': re.compile(r"^plot\((?P<expression>(?P<left_expression>.+?)(=(?P<right_expression>.+))?)\)$")
 }
 
@@ -59,6 +56,8 @@ def calculate_helper(expression: str) -> str:
 
 
 # TODO: Fix disconnection of websocket when adding image
+# TODO: Plot both 2D and 3D
+# TODO: Plot both f(x)=.., x=.. and x/y=.. (maybe use solve if = is in the expression)
 def plot(expression: str) -> str:
     """Plot an expression"""
     # Regex = left_expression = right_expression
@@ -106,33 +105,33 @@ def plot(expression: str) -> str:
 def define(expression: str) -> str:
     """Assign an expression to a variable"""
     match = regexes['define'].match(expression)
-    variable = match.group(1)
-    arguments = match.group(3)
-    expression = match.group(4)
+    function_name = match.group('function_name')
+    arguments = match.group('arguments')
+    expression = match.group('expression')
     expression = calculate_helper(expression)
     
     if arguments is None:
-        GLOBALS.SAVED_VARIABLES[variable] = sympy.lambdify(expression.free_symbols, expression)
-        return f'{variable} = {expression}'
+        GLOBALS.SAVED_VARIABLES[function_name] = sympy.lambdify(expression.free_symbols, expression)
+        return f'{function_name} = {expression}'
     else:
-        GLOBALS.SAVED_VARIABLES[variable] = sympy.lambdify(sympy.symbols(arguments), expression)
-        return f'{variable}({arguments}) = {expression}'
+        GLOBALS.SAVED_VARIABLES[function_name] = sympy.lambdify(sympy.symbols(arguments), expression)
+        return f'{function_name}({arguments}) = {expression}'
 
 
 def is_equal(expression: str) -> str:
     """Check if two expressions are equal"""
     match = regexes['is_equal'].match(expression)
-    expression1 = match.group(1)
-    expression2 = match.group(2)
-    expression1 = calculate_helper(expression1)
-    expression2 = calculate_helper(expression2)
-    result = sympy.simplify(f'{expression1} - {expression2}') # Simplify the difference of the two expressions
+    left_expression = match.group('left_expression')
+    right_expression = match.group('right_expression')
+    left_expression = calculate_helper(left_expression)
+    right_expression = calculate_helper(right_expression)
+    result = sympy.simplify(f'{left_expression} - {right_expression}') # Simplify the difference of the two expressions
     return result == 0
 
 def factor(expression: str) -> str:
     """Factor an expression"""
     match = regexes['factor'].match(expression)
-    expression = match.group(1)
+    expression = match.group('expression')
     expression = calculate_helper(expression)
     expression = sympy.factor(expression)
     return expression
@@ -141,7 +140,7 @@ def factor(expression: str) -> str:
 def expand(expression: str) -> str:
     """Expand an expression"""
     match = regexes['expand'].match(expression)
-    expression = match.group(1)
+    expression = match.group('expression')
     expression = calculate_helper(expression)
     expression = sympy.expand(expression)
     return expression
@@ -151,7 +150,7 @@ def expand(expression: str) -> str:
 def simplify(expression: str) -> str:
     """Simplify an expression"""
     match = regexes['simplify'].match(expression)
-    expression = match.group(1)
+    expression = match.group('expression')
     expression = calculate_helper(expression)
     expression = sympy.simplify(expression)
     return expression
@@ -160,11 +159,11 @@ def simplify(expression: str) -> str:
 def solve(expression: str) -> str:
     """Solve an expression"""
     match = regexes['solve'].match(expression)
-    expression = match.group(1)
+    expression = match.group('expression')
+    variable = match.group('solve_for')
     expression = calculate_helper(expression)
 
-    if match.groups()[2] is not None: # If the expression contains a second argument
-        variable = match.group(3)
+    if variable is not None: # If the expression contains a second argument   
         expression = sympy.solve(expression, variable)
         if len(expression) == 1: # If there is only one solution unpack it
             expression = expression[0]
