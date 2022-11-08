@@ -51,6 +51,7 @@ def calculate_helper(expression: str) -> str:
 
 
 # TODO: Fix disconnection of websocket when adding image
+# IDEA: Add image to firebase storage and get url
 # TODO: Plot both 2D and 3D
 # TODO: Plot both f(x)=.., x=.. and x/y=.. (maybe use solve if = is in the expression)
 def plot(expression: str) -> str:

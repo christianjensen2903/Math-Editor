@@ -11,5 +11,5 @@ class BlockModel(BaseModel):
     type: BlockType
     content: str
     result: Optional[str] = None
-    last_edited: str
+    last_ran: Optional[str] = None
     last_calculated: Optional[str] = None

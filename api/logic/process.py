@@ -14,7 +14,7 @@ from typing import List
 def process_block(block: BlockModel) -> BlockModel:
     """Process a block"""
     # If the block haven't been edited since last calculation do nothing
-    if block.last_calculated == block.last_edited:
+    if block.last_calculated == block.last_ran:
         return block
 
     # Calculate the result of the block
@@ -26,7 +26,7 @@ def process_block(block: BlockModel) -> BlockModel:
         block.result = calculate_markdown(block.content)
 
     # Update the last calculated time
-    block.last_calculated = block.last_edited
+    block.last_calculated = block.last_ran
 
     return block
 
