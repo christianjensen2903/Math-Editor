@@ -2,15 +2,21 @@ from fastapi import FastAPI, WebSocket, Request, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, FileResponse
 from html import html
 from logic import process
-from fastapi.staticfiles import StaticFiles
 from typing import List
-
-
-# Get the environment variables
-# print(os.getenv("API_URL"))
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class ConnectionManager:
@@ -32,11 +38,15 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 
-
-
 @app.get("/")
 async def get():
     return HTMLResponse(html)
+
+
+@app.get("/load_notebook")
+async def load_notebook():
+    print(process.load_notebook())
+    return process.load_notebook()
 
 
 @app.websocket("/ws")

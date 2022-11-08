@@ -2,6 +2,7 @@
 # from ..model.BlockModel import BlockType
 from model.BlockModel import BlockModel
 from model.BlockModel import BlockType
+from model.NotebookModel import NotebookModel
 from logic.calculate_markdown import calculate_markdown
 from logic.calculate_math import calculate_math
 from logic.calculate_python import calculate_python
@@ -36,3 +37,23 @@ def update(input: str) -> str:
     blocks = parse.parse_input(input)
     blocks = [process_block(block) for block in blocks]
     return parse.parse_output(blocks)
+
+
+
+
+example_notebook = NotebookModel(
+    title="Example Notebook",
+    blocks=[
+        BlockModel(
+            type=BlockType.math,
+            content="1+1",
+            last_ran=None,
+            last_calculated=None,
+            result=None,
+        ),
+    ]
+)
+
+def load_notebook() -> str:
+    """Load the example notebook"""
+    return parse.parse_output(example_notebook.blocks)
