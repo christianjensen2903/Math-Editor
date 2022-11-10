@@ -1,0 +1,2 @@
+latex2sympy2==1.8.3
+wordsmiths==0.1.2

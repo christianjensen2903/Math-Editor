@@ -1,3 +1,4 @@
 api/__pycache__/
 api/.env
 api/unit_tests/__pycache__/
+__pycache__
