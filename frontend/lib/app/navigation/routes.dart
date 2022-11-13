@@ -2,6 +2,8 @@ import 'package:frontend/app/navigation/transition_page.dart';
 import 'package:frontend/components/auth/auth.dart';
 import 'package:routemaster/routemaster.dart' hide TransitionPage;
 
+import 'package:frontend/components/document/document.dart';
+
 const _login = '/login';
 const _register = '/register';
 const _document = '/document';
@@ -23,5 +25,21 @@ final routesLoggedOut = RouteMap(
     _register: (_) => const TransitionPage(
           child: RegisterPage(),
         ),
+  },
+);
+
+final routesLoggedIn = RouteMap(
+  onUnknownRoute: (_) => const Redirect(_newDocument),
+  routes: {
+    _newDocument: (_) => const TransitionPage(child: NewDocumentPage()),
+    '$_document/:id': (info) {
+      final docId = info.pathParameters['id'];
+      if (docId == null) {
+        return const Redirect(_newDocument);
+      }
+      return TransitionPage(
+        child: DocumentPage(documentId: docId),
+      );
+    },
   },
 );
