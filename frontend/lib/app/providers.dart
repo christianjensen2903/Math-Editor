@@ -1,12 +1,23 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/app/constants.dart';
+import 'package:frontend/app/state/state.dart';
+import 'package:frontend/repositories/repositories.dart';
 
 abstract class Dependency {
   static Provider<Client> get client => _clientProvider;
   static Provider<Databases> get database => _databaseProvider;
   static Provider<Account> get account => _accountProvider;
   static Provider<Realtime> get realtime => _realtimeProvider;
+}
+
+abstract class Repository {
+  static Provider<AuthRepository> get auth => AuthRepository.provider;
+}
+
+abstract class AppState {
+  static StateNotifierProvider<AuthService, AuthState> get auth =>
+      AuthService.provider;
 }
 
 final _clientProvider = Provider<Client>(
