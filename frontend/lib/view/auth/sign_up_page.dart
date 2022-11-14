@@ -3,8 +3,8 @@ import 'package:frontend/view_model/auth_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/view/auth/widgets/widgets.dart';
 
-class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+class SignUpPage extends StatelessWidget {
+  const SignUpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class RegisterPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register Page'),
+        title: const Text('Sign Up Page'),
       ),
       body: Center(
         child: ConstrainedBox(
@@ -20,7 +20,7 @@ class RegisterPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Register Page'),
+              const Text('Sign Up Page'),
               const SizedBox(height: 20),
               CustomTextField(
                   controller: authViewModel.emailController,
@@ -33,18 +33,18 @@ class RegisterPage extends StatelessWidget {
               CustomTextField(
                   controller: authViewModel.confirmPasswordController,
                   placeHolder: 'Confirm Password'),
-              // Go to register page button
+              // Go to Sign Up page button
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/');
                 },
-                child: const Text('Login'),
+                child: const Text('Sign In'),
               ),
               ElevatedButton(
                 onPressed: () {
-                  authViewModel.register();
+                  authViewModel.signUp();
                 },
-                child: const Text('Register'),
+                child: const Text('Sign Up'),
               ),
               if (authViewModel.isError)
                 Text(

@@ -25,129 +25,97 @@ class AuthViewModel extends ChangeNotifier {
       _confirmPasswordController;
 
   bool haveActiveSession() {
-    try {
-      AuthRepository().getSession();
-      return true;
-    } catch (e) {
-      return false;
-    }
+    return AuthRepository().haveActiveSession();
   }
 
   void signIn() {
-    if (_emailController.text.isEmpty) {
-      _isError = true;
-      _errorMessage = 'Email is required';
-      notifyListeners();
+    if (!_fieldsAreValid(isSigningUp: false)) {
       return;
     }
 
-    if (_passwordController.text.isEmpty) {
-      _isError = true;
-      _errorMessage = 'Password is required';
-      notifyListeners();
-      return;
-    }
-
-    if (!_isValidEmail(emailController.text)) {
-      _isError = true;
-      _errorMessage = 'Email is not valid';
-      notifyListeners();
-      return;
-    }
-
-    if (!_isValidPassword(passwordController.text)) {
-      _isError = true;
-      _errorMessage = 'Password is not valid';
-      notifyListeners();
-      return;
-    }
-
-    try {
-      AuthRepository().signIn(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+    AuthRepository().signIn(emailController.text, passwordController.text, () {
       _isSignedIn = true;
+      _isError = false;
+      _errorMessage = '';
       notifyListeners();
-    } catch (e) {
+    }, (error) {
       _isError = true;
-      _errorMessage = e.toString();
+      _errorMessage = error;
       notifyListeners();
-    }
+    });
   }
 
   void signOut() {
-    try {
-      AuthRepository().signOut();
-      _isSignedIn = false;
-      notifyListeners();
-    } catch (e) {
-      _isError = true;
-      _errorMessage = e.toString();
-      notifyListeners();
-    }
+    AuthRepository().signOut();
   }
 
-  void register() {
-    if (_emailController.text.isEmpty) {
-      _isError = true;
-      _errorMessage = 'Email is required';
-      notifyListeners();
+  void signUp() {
+    if (!_fieldsAreValid(isSigningUp: true)) {
       return;
     }
 
-    if (_passwordController.text.isEmpty) {
-      _isError = true;
-      _errorMessage = 'Password is required';
-      notifyListeners();
-      return;
-    }
-
-    if (_confirmPasswordController.text.isEmpty) {
-      _isError = true;
-      _errorMessage = 'Confirm Password is required';
-      notifyListeners();
-      return;
-    }
-
-    if (!_isValidEmail(emailController.text)) {
-      _isError = true;
-      _errorMessage = 'Email is not valid';
-      notifyListeners();
-      return;
-    }
-
-    if (!_isValidPassword(passwordController.text)) {
-      _isError = true;
-      _errorMessage = 'Password is not valid';
-      notifyListeners();
-      return;
-    }
-
-    if (_passwordController.text != _confirmPasswordController.text) {
-      _isError = true;
-      _errorMessage = "Passwords don't match";
-      notifyListeners();
-      return;
-    }
-
-    try {
-      AuthRepository().register(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+    AuthRepository().signUp(emailController.text, passwordController.text, () {
       _isSignedIn = true;
+      _isError = false;
+      _errorMessage = '';
       notifyListeners();
-    } catch (e) {
+    }, (error) {
       _isError = true;
-      _errorMessage = e.toString();
+      _errorMessage = error;
       notifyListeners();
-    }
+    });
   }
 
   void forgotPassword() {
     _isSignedIn = false;
     notifyListeners();
+  }
+
+  bool _fieldsAreValid({bool isSigningUp = true}) {
+    if (_emailController.text.isEmpty) {
+      _isError = true;
+      _errorMessage = 'Email is required';
+      notifyListeners();
+      return false;
+    }
+
+    if (_passwordController.text.isEmpty) {
+      _isError = true;
+      _errorMessage = 'Password is required';
+      notifyListeners();
+      return false;
+    }
+
+    if (isSigningUp && _confirmPasswordController.text.isEmpty) {
+      _isError = true;
+      _errorMessage = 'Confirm Password is required';
+      notifyListeners();
+      return false;
+    }
+
+    if (!_isValidEmail(emailController.text)) {
+      _isError = true;
+      _errorMessage = 'Email is not valid';
+      notifyListeners();
+      return false;
+    }
+
+    if (!_isValidPassword(passwordController.text)) {
+      _isError = true;
+      _errorMessage = 'Password is not valid';
+      notifyListeners();
+      return false;
+    }
+
+    if (isSigningUp &&
+        _passwordController.text != _confirmPasswordController.text) {
+      _isError = true;
+      _errorMessage = "Passwords don't match";
+      notifyListeners();
+      return false;
+    }
+
+    return true;
   }
 
   bool _isValidEmail(String email) {

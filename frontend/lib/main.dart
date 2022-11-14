@@ -5,9 +5,15 @@ import 'package:frontend/view/homepage/home_page.dart';
 import 'package:frontend/view/notebook/notebook_page.dart';
 import 'package:frontend/view_model/auth_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 Future main() async {
   await dotenv.load(fileName: '.env');
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => AuthViewModel()),
@@ -27,13 +33,14 @@ class _MyAppState extends State<MyApp> {
     AuthViewModel authViewModel = context.watch<AuthViewModel>();
 
     return MaterialApp(
-        title: 'Flutter Demo',
+        title: 'MathNote',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
         routes: {
-          '/': (context) => authViewModel.isSignedIn ? HomePage() : LoginPage(),
-          '/register': (context) => RegisterPage(),
+          '/': (context) =>
+              authViewModel.isSignedIn ? HomePage() : SignInPage(),
+          '/register': (context) => SignUpPage(),
           '/notebook': (context) => NotebookPage(),
         });
   }

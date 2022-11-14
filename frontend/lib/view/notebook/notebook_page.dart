@@ -18,6 +18,20 @@ class NotebookPage extends StatelessWidget {
 
     final String notebookId =
         ModalRoute.of(context)!.settings.arguments as String;
-    return Container();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notebook Page'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Notebook Page'),
+            // Button to open notebook
+          ],
+        ),
+      ),
+    );
   }
 }
