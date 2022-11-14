@@ -38,3 +38,7 @@ class _MathEditorAppState extends ConsumerState<MathEditorApp> {
     );
   }
 }
+
+abstract class AppColors {
+  static const secondary = Color(0xFF216BDD);
+}
