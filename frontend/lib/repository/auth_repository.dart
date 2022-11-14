@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:frontend/repository/ref.dart';
 import 'package:frontend/utils/constants.dart';
 
 class AuthRepository {
@@ -15,7 +16,17 @@ class AuthRepository {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      onSuccess();
+
+      try {
+        await Ref().user.child(currentUserUid()).set({
+          'email': email,
+          'name': email.split('@')[0],
+        });
+        onSuccess();
+      } catch (e) {
+        await FirebaseAuth.instance.currentUser!.delete();
+        onError(e.toString());
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         onError('The password provided is too weak.');
