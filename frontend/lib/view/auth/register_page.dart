@@ -42,7 +42,7 @@ class RegisterPage extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  authViewModel.signIn();
+                  authViewModel.register();
                 },
                 child: const Text('Register'),
               ),

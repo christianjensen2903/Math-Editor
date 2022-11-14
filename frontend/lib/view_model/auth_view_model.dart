@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/repository/auth_repository.dart';
 
 class AuthViewModel extends ChangeNotifier {
   bool _isSignedIn = false;
   bool _isError = false;
   String _errorMessage = '';
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  AuthViewModel() {
+    _isSignedIn = haveActiveSession();
+  }
 
   bool get isSignedIn => _isSignedIn;
   bool get isError => _isError;
@@ -17,6 +23,15 @@ class AuthViewModel extends ChangeNotifier {
   TextEditingController get passwordController => _passwordController;
   TextEditingController get confirmPasswordController =>
       _confirmPasswordController;
+
+  bool haveActiveSession() {
+    try {
+      AuthRepository().getSession();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
   void signIn() {
     if (_emailController.text.isEmpty) {
@@ -47,15 +62,30 @@ class AuthViewModel extends ChangeNotifier {
       return;
     }
 
-    _isError = false;
-    _isSignedIn = true;
-
-    notifyListeners();
+    try {
+      AuthRepository().signIn(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      _isSignedIn = true;
+      notifyListeners();
+    } catch (e) {
+      _isError = true;
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
   }
 
   void signOut() {
-    _isSignedIn = false;
-    notifyListeners();
+    try {
+      AuthRepository().signOut();
+      _isSignedIn = false;
+      notifyListeners();
+    } catch (e) {
+      _isError = true;
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
   }
 
   void register() {
@@ -101,10 +131,18 @@ class AuthViewModel extends ChangeNotifier {
       return;
     }
 
-    _isError = false;
-    _isSignedIn = true;
-
-    notifyListeners();
+    try {
+      AuthRepository().register(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      _isSignedIn = true;
+      notifyListeners();
+    } catch (e) {
+      _isError = true;
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
   }
 
   void forgotPassword() {
