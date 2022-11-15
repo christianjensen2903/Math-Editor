@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-
-class NotebookArguments {
-  final String notebookId;
-
-  NotebookArguments(this.notebookId);
-}
+import 'package:flutter_quill/flutter_quill.dart' hide Text;
 
 class NotebookPage extends StatelessWidget {
   const NotebookPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final NotebookArguments args =
-    //     ModalRoute.of(context)!.settings.arguments as NotebookArguments;
+    QuillController _controller = QuillController.basic();
 
     final String notebookId =
         ModalRoute.of(context)!.settings.arguments as String;
@@ -28,7 +22,15 @@ class NotebookPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('Notebook Page'),
-            // Button to open notebook
+            QuillToolbar.basic(controller: _controller),
+            Expanded(
+              child: Container(
+                child: QuillEditor.basic(
+                  controller: _controller,
+                  readOnly: false, // true for view only mode
+                ),
+              ),
+            )
           ],
         ),
       ),
