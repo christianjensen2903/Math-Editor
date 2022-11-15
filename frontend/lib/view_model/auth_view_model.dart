@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/repository.dart';
 
 class AuthViewModel extends ChangeNotifier {
   bool _isSignedIn = false;
@@ -25,7 +26,7 @@ class AuthViewModel extends ChangeNotifier {
       _confirmPasswordController;
 
   bool haveActiveSession() {
-    return AuthRepository().haveActiveSession();
+    return Repository().auth.haveActiveSession();
   }
 
   void signIn() {
@@ -33,7 +34,7 @@ class AuthViewModel extends ChangeNotifier {
       return;
     }
 
-    AuthRepository().signIn(emailController.text, passwordController.text, () {
+    Repository().auth.signIn(emailController.text, passwordController.text, () {
       _isSignedIn = true;
       _isError = false;
       _errorMessage = '';
@@ -46,7 +47,7 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   void signOut() {
-    AuthRepository().signOut();
+    Repository().auth.signOut();
   }
 
   void signUp() {
@@ -54,7 +55,7 @@ class AuthViewModel extends ChangeNotifier {
       return;
     }
 
-    AuthRepository().signUp(emailController.text, passwordController.text, () {
+    Repository().auth.signUp(emailController.text, passwordController.text, () {
       _isSignedIn = true;
       _isError = false;
       _errorMessage = '';

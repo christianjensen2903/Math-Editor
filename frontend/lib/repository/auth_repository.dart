@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:frontend/repository/ref.dart';
 import 'package:frontend/utils/constants.dart';
+import 'package:frontend/repository/repository.dart';
 
-class AuthRepository {
+class FirebaseAuthRepo implements AuthRepository {
+  @override
   String currentUserUid() {
     if (FirebaseAuth.instance.currentUser != null) {
       return FirebaseAuth.instance.currentUser!.uid;
@@ -11,6 +13,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<void> signUp(String email, String password, Function() onSuccess,
       Function(String errorMessage) onError) async {
     try {
@@ -38,6 +41,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<void> signIn(String email, String password, Function() onSuccess,
       Function(String errorMessage) onError) async {
     try {
@@ -55,6 +59,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
   }
@@ -75,6 +80,7 @@ class AuthRepository {
   }
 
   // Check if user is signed in
+  @override
   bool haveActiveSession() {
     try {
       currentUserUid();
