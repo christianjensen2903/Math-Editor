@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/constants.dart';
 import 'package:frontend/view/auth/widgets/widgets.dart';
 import 'package:frontend/view_model/auth_view_model.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,13 @@ class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthViewModel authViewModel = context.watch<AuthViewModel>();
+
+    // If the user is already signed in, redirect to the home page
+    if (authViewModel.isSignedIn) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, homeRoute);
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(

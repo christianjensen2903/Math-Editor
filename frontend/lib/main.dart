@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:frontend/view/auth/auth.dart';
-import 'package:frontend/view/homepage/home_page.dart';
-import 'package:frontend/view/notebook/notebook_page.dart';
+import 'package:frontend/utils/constants.dart';
 import 'package:frontend/view_model/auth_view_model.dart';
-import 'package:frontend/view_model/notebook_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:frontend/app_router.dart';
 
 Future main() async {
   await dotenv.load(fileName: '.env');
@@ -18,7 +16,6 @@ Future main() async {
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => AuthViewModel()),
-    ChangeNotifierProvider(create: (_) => NotebookViewModel()),
   ], child: MyApp()));
 }
 
@@ -35,15 +32,12 @@ class _MyAppState extends State<MyApp> {
     AuthViewModel authViewModel = context.watch<AuthViewModel>();
 
     return MaterialApp(
-        title: 'MathNote',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        routes: {
-          '/': (context) =>
-              authViewModel.isSignedIn ? HomePage() : SignInPage(),
-          '/register': (context) => SignUpPage(),
-          '/notebook': (context) => NotebookPage(),
-        });
+      title: 'MathNote',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      onGenerateRoute: AppRouter.generateRoute,
+      initialRoute: homeRoute,
+    );
   }
 }

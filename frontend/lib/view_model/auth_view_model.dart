@@ -48,6 +48,11 @@ class AuthViewModel extends ChangeNotifier {
 
   void signOut() {
     Repository().auth.signOut();
+    _emailController.clear();
+    _passwordController.clear();
+    _confirmPasswordController.clear();
+    _isSignedIn = false;
+    notifyListeners();
   }
 
   void signUp() {
