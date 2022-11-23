@@ -54,6 +54,7 @@ class DefaultFirebaseOptions {
     }
   }
 
+  // BUG: There may be a bug when reading these values from the .env file.
   static FirebaseOptions web = FirebaseOptions(
     apiKey: dotenv.env['FIREBASE_API_KEY']!,
     appId: dotenv.env['FIREBASE_APP_ID']!,

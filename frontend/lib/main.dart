@@ -4,6 +4,7 @@ import 'package:frontend/view/auth/auth.dart';
 import 'package:frontend/view/homepage/home_page.dart';
 import 'package:frontend/view/notebook/notebook_page.dart';
 import 'package:frontend/view_model/auth_view_model.dart';
+import 'package:frontend/view_model/notebook_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -17,6 +18,7 @@ Future main() async {
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => AuthViewModel()),
+    ChangeNotifierProvider(create: (_) => NotebookViewModel()),
   ], child: MyApp()));
 }
 
