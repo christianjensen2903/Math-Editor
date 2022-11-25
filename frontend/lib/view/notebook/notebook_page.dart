@@ -2,22 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
+import 'package:frontend/model/notebook.dart';
 import 'package:frontend/view_model/notebook_view_model.dart';
 import 'package:provider/provider.dart';
 
-// class NotebookPage extends StatefulWidget {
-//   const NotebookPage({super.key});
+class NotebookPage extends StatefulWidget {
+  final Future<Notebook> notebook;
 
-//   @override
-//   State<NotebookPage> createState() => _NotebookPageState();
-// }
+  const NotebookPage({Key? key, required this.notebook}) : super(key: key);
 
-class NotebookPage extends StatelessWidget {
+  @override
+  State<NotebookPage> createState() => _NotebookPageState();
+}
+
+class _NotebookPageState extends State<NotebookPage> {
   final NotebookViewModel _notebookViewModel = NotebookViewModel();
 
-  final String notebookId;
-
-  NotebookPage({super.key, required this.notebookId});
+  @override
+  void initState() {
+    _notebookViewModel.listenForChanges();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +47,10 @@ class NotebookPage extends StatelessWidget {
                           readOnly: false, // true for view only mode
                         ),
                       ),
-                    )
+                    ),
+                    TextButton(
+                        onPressed: _notebookViewModel.listenForChanges,
+                        child: const Text('Calculate'))
                   ],
                 ),
               );

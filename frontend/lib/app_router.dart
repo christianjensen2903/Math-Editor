@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/model/notebook.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/view/auth/auth.dart';
 import 'package:frontend/view/homepage/home_page.dart';
@@ -12,7 +13,7 @@ class AppRouter {
       case notebookRoute:
         return MaterialPageRoute(
             builder: (_) => NotebookPage(
-                  notebookId: settings.arguments as String,
+                  notebook: settings.arguments as Future<Notebook>,
                 ));
       case registerRoute:
         return MaterialPageRoute(builder: (_) => SignUpPage());

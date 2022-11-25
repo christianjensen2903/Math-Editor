@@ -2,3 +2,4 @@ api/__pycache__/
 api/unit_tests/__pycache__/
 *.env
 __pycache__
+firebase_options.dart

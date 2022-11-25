@@ -1,19 +1,19 @@
 import 'package:equatable/equatable.dart';
 
-class UserModel extends Equatable {
+class User extends Equatable {
   final String id;
   final String name;
   final String email;
 
-  const UserModel({
+  const User({
     required this.id,
     required this.name,
     required this.email,
   });
 
-  UserModel? fromJson(Map<String, dynamic> json) {
+  User? fromJson(Map<String, dynamic> json) {
     try {
-      return UserModel(
+      return User(
         id: json['\$id'],
         name: json['name'],
         email: json['email'],

@@ -1,21 +1,34 @@
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/firebase_auth.dart';
+import 'package:frontend/model/notebook.dart';
+import 'package:frontend/repository/notebook_repository_impl.dart';
 
 abstract class AuthRepository {
-  void signUp(String email, String password, Function() onSuccess,
-      Function(String errorMessage) onError);
+  Future<void> register(String email, String password);
 
-  void signIn(String email, String password, Function() onSuccess,
-      Function(String errorMessage) onError);
+  Future<void> login(String email, String password);
 
-  void signOut();
+  Future<void> logout();
 
-  String currentUserUid();
+  String? currentUserUid();
 
   bool haveActiveSession();
 }
 
+abstract class NotebookRepository {
+  Future<Notebook> createNotebook(String uid);
+
+  Future<void> updateNotebook(String uid, Notebook notebook);
+
+  Future<void> deleteNotebook(String uid, String notebookId);
+
+  Stream<List<Notebook>> getNotebooks(String uid);
+}
+
 class Repository {
   final AuthRepository _authRepository = FirebaseAuthRepo();
+  final NotebookRepository _notebookRepository = NotebookRepositoryImpl();
 
   AuthRepository get auth => _authRepository;
+
+  NotebookRepository get notebook => _notebookRepository;
 }

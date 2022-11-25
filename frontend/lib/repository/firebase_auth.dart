@@ -35,7 +35,7 @@ class FirebaseAuthRepo implements AuthRepository {
 
     // Create a new user in the database
     if (FirebaseAuth.instance.currentUser != null) {
-      Ref().user.child(currentUserUid()!).set({
+      Ref().databaseSpecificUser(currentUserUid()!).set({
         'email': email,
         'name': email.split('@')[0],
       });

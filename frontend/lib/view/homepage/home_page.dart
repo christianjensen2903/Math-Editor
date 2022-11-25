@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/view/auth/auth.dart';
 import 'package:frontend/view_model/auth_view_model.dart';
+import 'package:frontend/view_model/home_view_model.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -12,6 +13,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthViewModel authViewModel = context.watch<AuthViewModel>();
+    HomeViewModel homeViewModel = context.watch<HomeViewModel>();
 
     if (!authViewModel.isSignedIn) {
       return SignInPage();
@@ -42,7 +44,7 @@ class HomePage extends StatelessWidget {
                 Navigator.pushNamed(
                   context,
                   notebookRoute,
-                  arguments: 'notebookId',
+                  arguments: homeViewModel.createNotebook(),
                 );
               },
               child: const Text('Create Notebook'),
