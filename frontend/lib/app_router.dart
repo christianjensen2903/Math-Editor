@@ -12,7 +12,7 @@ class AppRouter {
       case notebookRoute:
         return MaterialPageRoute(
             builder: (_) => NotebookPage(
-                  notebookId: "test",
+                  notebookId: settings.arguments as String,
                 ));
       case registerRoute:
         return MaterialPageRoute(builder: (_) => SignUpPage());

@@ -6,6 +6,6 @@ final appwriteProjectId = dotenv.env['APPWRITE_PROJECT_ID']!;
 /// All the routes used in the app.
 
 const String homeRoute = '/';
-const String registerRoute = 'register';
-const String loginRoute = 'login';
-const String notebookRoute = 'notebook';
+const String registerRoute = '/register';
+const String loginRoute = '/login';
+const String notebookRoute = '/notebook';

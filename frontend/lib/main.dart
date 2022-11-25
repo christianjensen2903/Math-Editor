@@ -7,7 +7,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:frontend/app_router.dart';
 
-Future main() async {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
 
   await Firebase.initializeApp(
@@ -29,8 +30,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    AuthViewModel authViewModel = context.watch<AuthViewModel>();
-
     return MaterialApp(
       title: 'MathNote',
       theme: ThemeData(
