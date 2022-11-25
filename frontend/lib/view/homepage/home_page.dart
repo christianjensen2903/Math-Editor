@@ -36,10 +36,21 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Open Notebook'),
             ),
+            // Button to create notebook
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  notebookRoute,
+                  arguments: 'notebookId',
+                );
+              },
+              child: const Text('Create Notebook'),
+            ),
             // Logout button
             TextButton(
               onPressed: () {
-                authViewModel.signOut();
+                authViewModel.logout();
               },
               child: const Text('Logout'),
             ),

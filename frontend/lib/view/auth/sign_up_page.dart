@@ -42,7 +42,7 @@ class SignUpPage extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  authViewModel.signUp();
+                  authViewModel.register();
                 },
                 child: const Text('Sign Up'),
               ),

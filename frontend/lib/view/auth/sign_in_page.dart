@@ -51,7 +51,7 @@ class SignInPage extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  authViewModel.signIn();
+                  authViewModel.login();
                 },
                 child: const Text('Sign In'),
               ),

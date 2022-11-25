@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/repository/auth_repository.dart';
+import 'package:frontend/repository/firebase_auth.dart';
 import 'package:frontend/repository/repository.dart';
 
 class AuthViewModel extends ChangeNotifier {
@@ -29,45 +29,55 @@ class AuthViewModel extends ChangeNotifier {
     return Repository().auth.haveActiveSession();
   }
 
-  void signIn() {
+  void login() {
     if (!_fieldsAreValid(isSigningUp: false)) {
       return;
     }
 
-    Repository().auth.signIn(emailController.text, passwordController.text, () {
+    Repository()
+        .auth
+        .login(_emailController.text, _passwordController.text)
+        .then((value) {
       _isSignedIn = true;
-      _isError = false;
-      _errorMessage = '';
       notifyListeners();
-    }, (error) {
+    }).catchError((error) {
+      _isSignedIn = false;
       _isError = true;
-      _errorMessage = error;
+      _errorMessage = error.toString();
       notifyListeners();
     });
   }
 
-  void signOut() {
-    Repository().auth.signOut();
-    _emailController.clear();
-    _passwordController.clear();
-    _confirmPasswordController.clear();
-    _isSignedIn = false;
-    notifyListeners();
+  void logout() {
+    Repository().auth.logout().then((value) {
+      _isSignedIn = false;
+      _emailController.clear();
+      _passwordController.clear();
+      _confirmPasswordController.clear();
+      notifyListeners();
+    }).catchError((error) {
+      _isSignedIn = true;
+      _isError = true;
+      _errorMessage = error.toString();
+      notifyListeners();
+    });
   }
 
-  void signUp() {
+  void register() {
     if (!_fieldsAreValid(isSigningUp: true)) {
       return;
     }
 
-    Repository().auth.signUp(emailController.text, passwordController.text, () {
+    Repository()
+        .auth
+        .register(_emailController.text, _passwordController.text)
+        .then((value) {
       _isSignedIn = true;
-      _isError = false;
-      _errorMessage = '';
       notifyListeners();
-    }, (error) {
+    }).catchError((error) {
+      _isSignedIn = false;
       _isError = true;
-      _errorMessage = error;
+      _errorMessage = error.toString();
       notifyListeners();
     });
   }
