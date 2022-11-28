@@ -1,12 +1,13 @@
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:frontend/model/delta_data.dart';
 import 'package:frontend/model/notebook.dart';
 import 'package:frontend/repository/ref.dart';
 import 'package:frontend/repository/repository.dart';
 
 class NotebookRepositoryImpl implements NotebookRepository {
   @override
-  Future<Notebook> createNotebook(String uid) async {
-    final notebookId = Ref().databaseNotebooksForUser(uid).push().key;
+  Future<Notebook> createNotebook() async {
+    final notebookId = Ref().databaseNotebooks.push().key;
     if (notebookId == null) {
       throw Exception('Notebook ID is null');
     }
@@ -16,40 +17,37 @@ class NotebookRepositoryImpl implements NotebookRepository {
       content: Delta(),
     );
 
-    await Ref().databaseSpecificNotebook(uid, notebookId).set(notebook.toMap());
+    await Ref().databaseSpecificNotebook(notebookId).set(notebook.toMap());
 
-    print('Notebook created: $notebookId');
+    await Ref().databaseSpecificNotebookContent(notebookId).set({
+      'content': null,
+      'user': null,
+      'deviceId': null,
+    });
 
     return notebook;
   }
 
   @override
-  Future<void> deleteNotebook(String uid, String notebookId) {
-    return Ref().databaseSpecificNotebook(uid, notebookId).remove();
+  Future<void> deleteNotebook(String notebookId) {
+    return Ref().databaseSpecificNotebook(notebookId).remove();
   }
 
   @override
-  Stream<List<Notebook>> getNotebooks(String uid) {
-    return Ref().databaseNotebooksForUser(uid).onValue.map((event) {
-      final notebooks = <Notebook>[];
-      final snapshot = event.snapshot;
-      if (snapshot.value != null) {
-        final notebookMaps = Map<String, dynamic>.from(snapshot.value as Map);
-        notebookMaps.forEach((key, value) {
-          final notebook = Notebook.fromJson(value, key);
-          if (notebook != null) {
-            notebooks.add(notebook);
-          }
-        });
-      }
-      return notebooks;
-    });
+  Future<void> updateNotebook(Notebook notebook) {
+    return Ref().databaseSpecificNotebook(notebook.id).update(notebook.toMap());
   }
 
   @override
-  Future<void> updateNotebook(String uid, Notebook notebook) {
+  Future<void> updateNotebookContent(String notebookId, DeltaData deltaData) {
     return Ref()
-        .databaseSpecificNotebook(uid, notebook.id)
-        .update(notebook.toMap());
+        .databaseSpecificNotebookContent(notebookId)
+        .update(deltaData.toMap());
+  }
+
+  @override
+  Stream<List<Notebook>> getNotebooks() {
+    // TODO: implement getNotebooks
+    throw UnimplementedError();
   }
 }

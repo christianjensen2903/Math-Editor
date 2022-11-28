@@ -7,15 +7,11 @@ import 'package:flutter_quill/flutter_quill.dart';
 class HomeViewModel extends ChangeNotifier {
   // Get all notebooks for the current user
   Stream<List<Notebook>> getNotebooks() {
-    return Repository()
-        .notebook
-        .getNotebooks(Repository().auth.currentUserUid()!);
+    return Repository().notebook.getNotebooks();
   }
 
   // Create a new notebook
   Future<Notebook> createNotebook() {
-    return Repository()
-        .notebook
-        .createNotebook(Repository().auth.currentUserUid()!);
+    return Repository().notebook.createNotebook();
   }
 }

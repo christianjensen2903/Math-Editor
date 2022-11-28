@@ -12,19 +12,37 @@ class NotebookPage extends StatefulWidget {
   const NotebookPage({Key? key, required this.notebook}) : super(key: key);
 
   @override
-  State<NotebookPage> createState() => _NotebookPageState();
+  State<NotebookPage> createState() => _NotebookPageState(notebook);
 }
 
 class _NotebookPageState extends State<NotebookPage> {
   final NotebookViewModel _notebookViewModel = NotebookViewModel();
 
+  final Future<Notebook> _notebook;
+
+  _NotebookPageState(this._notebook);
+
   @override
   void initState() {
-    _notebookViewModel.listenForChanges();
+    super.initState();
+
+    loadNotebook(_notebook);
+  }
+
+  void loadNotebook(Future<Notebook> notebook) async {
+    _notebookViewModel.loadNotebook(await notebook);
+    print('Notebook loaded');
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_notebookViewModel.isLoaded()) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notebook Page'),
@@ -48,9 +66,6 @@ class _NotebookPageState extends State<NotebookPage> {
                         ),
                       ),
                     ),
-                    TextButton(
-                        onPressed: _notebookViewModel.listenForChanges,
-                        child: const Text('Calculate'))
                   ],
                 ),
               );

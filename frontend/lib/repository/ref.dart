@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 String REF_USER = 'users';
 String REF_NOTEBOOK = 'notebooks';
+String REF_NOTEBOOK_CONTENT = 'notebook_content';
 
 class Ref {
   final DatabaseReference _databaseRoot = FirebaseDatabase.instance.ref();
@@ -15,9 +16,12 @@ class Ref {
 
   DatabaseReference get databaseNotebooks => _databaseRoot.child(REF_NOTEBOOK);
 
-  DatabaseReference databaseNotebooksForUser(String uid) =>
-      _databaseRoot.child(REF_NOTEBOOK).child(uid);
+  DatabaseReference databaseSpecificNotebook(String notebookId) =>
+      _databaseRoot.child(REF_NOTEBOOK).child(notebookId);
 
-  DatabaseReference databaseSpecificNotebook(String uid, String notebookId) =>
-      _databaseRoot.child(REF_NOTEBOOK).child(uid).child(notebookId);
+  DatabaseReference get databaseNotebookContent =>
+      _databaseRoot.child(REF_NOTEBOOK_CONTENT);
+
+  DatabaseReference databaseSpecificNotebookContent(String notebookId) =>
+      _databaseRoot.child(REF_NOTEBOOK_CONTENT).child(notebookId);
 }

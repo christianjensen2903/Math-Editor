@@ -1,3 +1,4 @@
+import 'package:frontend/model/delta_data.dart';
 import 'package:frontend/repository/firebase_auth.dart';
 import 'package:frontend/model/notebook.dart';
 import 'package:frontend/repository/notebook_repository_impl.dart';
@@ -15,13 +16,17 @@ abstract class AuthRepository {
 }
 
 abstract class NotebookRepository {
-  Future<Notebook> createNotebook(String uid);
+  Future<Notebook> createNotebook();
 
-  Future<void> updateNotebook(String uid, Notebook notebook);
+  Future<void> updateNotebook(Notebook notebook);
 
-  Future<void> deleteNotebook(String uid, String notebookId);
+  Future<void> deleteNotebook(String notebookId);
 
-  Stream<List<Notebook>> getNotebooks(String uid);
+  Stream<List<Notebook>> getNotebooks();
+
+  // TODO: Implementing retrieving and updating notebook content remotely
+  // https://github.com/funwithflutter/google-docs-clone-flutter/blob/master/lib/components/document/state/document_controller.dart
+  Future<void> updateNotebookContent(String notebookId, DeltaData deltaData);
 }
 
 class Repository {
