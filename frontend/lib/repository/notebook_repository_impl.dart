@@ -18,8 +18,6 @@ class NotebookRepositoryImpl implements NotebookRepository {
     }
     final notebook = Notebook(
       id: notebookId,
-      title: 'Untitled',
-      content: Delta(),
     );
 
     await Ref().databaseSpecificNotebook(notebookId).set(notebook.toMap());

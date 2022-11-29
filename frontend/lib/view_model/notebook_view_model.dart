@@ -39,7 +39,7 @@ class NotebookViewModel extends ChangeNotifier {
       if (_notebook!.content.isEmpty) {
         quillDoc = Document()..insert(0, '');
       } else {
-        quillDoc = Document.fromDelta(_notebook!.content);
+        quillDoc = Document.fromDelta(Delta.fromJson(_notebook!.content));
       }
 
       final quillController = QuillController(
@@ -134,7 +134,7 @@ class NotebookViewModel extends ChangeNotifier {
     final notebook = Notebook(
       id: _notebook!.id,
       title: _notebook!.title,
-      content: _document!.toDelta(),
+      content: _document!.toDelta().toJson(),
     );
     await Repository().notebook.updateNotebook(notebook);
     _isSavedRemotely = true;

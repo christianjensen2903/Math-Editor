@@ -5,31 +5,25 @@ import 'dart:convert';
 class Notebook extends Equatable {
   final String id;
   final String title;
-  final Delta content;
+  final List content;
   const Notebook({
     required this.id,
-    required this.title,
-    required this.content,
+    this.title = 'Untitled',
+    this.content = const [],
   });
 
   Map<String, dynamic> toMap() {
     return {
       'title': title,
-      'content': content.toJson(),
+      'content': content,
     };
   }
 
   factory Notebook.fromMap(Map<String, dynamic> map, String id) {
-    final contentJson =
-        (map['content'] == null) ? [] : jsonDecode(map['content']);
-
-    print(contentJson);
-    print(Delta.fromJson(contentJson));
-
     return Notebook(
       id: id,
       title: map['title'] ?? 'Untitled',
-      content: Delta.fromJson(contentJson),
+      content: List.from(map['content'] ?? []),
     );
   }
 
