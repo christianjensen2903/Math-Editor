@@ -32,9 +32,8 @@ class NotebookRepositoryImpl implements NotebookRepository {
 
     await Ref()
         .databaseNotebookOverviewForUser(Repository().auth.currentUserUid()!)
-        .set({
-      'notebookId': notebookId,
-    });
+        .child(notebookId)
+        .set({'notebookId': notebookId});
 
     return notebook;
   }
@@ -66,7 +65,6 @@ class NotebookRepositoryImpl implements NotebookRepository {
       final notebookIds = <String>[];
       final snapshot = event.snapshot;
 
-      print(snapshot);
       if (snapshot.value != null) {
         final map = snapshot.value as Map<dynamic, dynamic>;
         map.forEach((key, value) {
@@ -76,12 +74,24 @@ class NotebookRepositoryImpl implements NotebookRepository {
       return notebookIds;
     }).first;
 
-    print(notebookIds);
+    // Get notebooks from notebook ids
+    final notebooks = <Notebook>[];
+    for (final notebookId in notebookIds) {
+      final notebook =
+          await Ref().databaseSpecificNotebook(notebookId).onValue.map((event) {
+        final snapshot = event.snapshot;
+        if (snapshot.value != null) {
+          return Notebook.fromMap(
+              snapshot.value as Map<String, dynamic>, notebookId);
+        } else {
+          return null;
+        }
+      }).first;
+      if (notebook != null) {
+        notebooks.add(notebook);
+      }
+    }
 
-    return await Future.wait(notebookIds.map((notebookId) async {
-      final event = await Ref().databaseSpecificNotebook(notebookId).once();
-      return Notebook.fromMap(
-          event.snapshot.value as Map<String, dynamic>, notebookId);
-    }));
+    return notebooks;
   }
 }

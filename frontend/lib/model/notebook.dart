@@ -22,11 +22,10 @@ class Notebook extends Equatable {
   factory Notebook.fromMap(Map<String, dynamic> map, String id) {
     final contentJson =
         (map['content'] == null) ? [] : jsonDecode(map['content']);
-
     return Notebook(
       id: id,
       title: map['title'],
-      content: Delta.fromJson(map['content']),
+      content: Delta.fromJson(contentJson),
     );
   }
 
