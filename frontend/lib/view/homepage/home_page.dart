@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:frontend/model/notebook.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/view/auth/auth.dart';
 import 'package:frontend/view_model/auth_view_model.dart';
@@ -71,7 +72,7 @@ class HomePage extends StatelessWidget {
                           Navigator.pushNamed(
                             context,
                             notebookRoute,
-                            arguments: snapshot.data![index].id,
+                            arguments: Future.value(snapshot.data![index]),
                           );
                         },
                       );
