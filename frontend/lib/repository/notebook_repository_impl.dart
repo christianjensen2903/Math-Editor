@@ -7,6 +7,11 @@ import 'package:frontend/repository/repository.dart';
 class NotebookRepositoryImpl implements NotebookRepository {
   @override
   Future<Notebook> createNotebook() async {
+    // Check if logged in
+    if (!Repository().auth.haveActiveSession()) {
+      throw Exception('Not logged in');
+    }
+
     final notebookId = Ref().databaseNotebooks.push().key;
     if (notebookId == null) {
       throw Exception('Notebook ID is null');
@@ -25,12 +30,20 @@ class NotebookRepositoryImpl implements NotebookRepository {
       'deviceId': null,
     });
 
+    await Ref()
+        .databaseNotebookOverviewForUser(Repository().auth.currentUserUid()!)
+        .set({
+      'notebookId': notebookId,
+    });
+
     return notebook;
   }
 
   @override
-  Future<void> deleteNotebook(String notebookId) {
-    return Ref().databaseSpecificNotebook(notebookId).remove();
+  Future<void> deleteNotebook(String notebookId) async {
+    await Ref().databaseSpecificNotebook(notebookId).remove();
+    await Ref().databaseSpecificNotebookContent(notebookId).remove();
+    // Delete notebook from user's notebook overview ?
   }
 
   @override
@@ -46,8 +59,29 @@ class NotebookRepositoryImpl implements NotebookRepository {
   }
 
   @override
-  Stream<List<Notebook>> getNotebooks() {
-    // TODO: implement getNotebooks
-    throw UnimplementedError();
+  Future<List<Notebook>> getNotebooksForUser(uid) async {
+    // First get notebook ids from overview then notebooks
+    final notebookIds =
+        await Ref().databaseNotebookOverviewForUser(uid).onValue.map((event) {
+      final notebookIds = <String>[];
+      final snapshot = event.snapshot;
+
+      print(snapshot);
+      if (snapshot.value != null) {
+        final map = snapshot.value as Map<dynamic, dynamic>;
+        map.forEach((key, value) {
+          notebookIds.add(key);
+        });
+      }
+      return notebookIds;
+    }).first;
+
+    print(notebookIds);
+
+    return await Future.wait(notebookIds.map((notebookId) async {
+      final event = await Ref().databaseSpecificNotebook(notebookId).once();
+      return Notebook.fromMap(
+          event.snapshot.value as Map<String, dynamic>, notebookId);
+    }));
   }
 }

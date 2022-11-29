@@ -31,16 +31,15 @@ class NotebookViewModel extends ChangeNotifier {
     return _controller != null;
   }
 
-  Future<void> loadNotebook(Notebook notebook) async {
-    print('Loading notebook ${notebook.id}');
+  Future<void> loadNotebook(Future<Notebook> notebook) async {
     try {
-      _notebook = notebook;
+      _notebook = await notebook;
 
       late final Document quillDoc;
       if (_notebook!.content.isEmpty) {
         quillDoc = Document()..insert(0, '');
       } else {
-        quillDoc = Document.fromDelta(notebook.content);
+        quillDoc = Document.fromDelta(_notebook!.content);
       }
 
       final quillController = QuillController(

@@ -56,6 +56,32 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Logout'),
             ),
+            // List of notebooks from future
+            FutureBuilder(
+              future: homeViewModel.getNotebooks(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(snapshot.data![index].title),
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            notebookRoute,
+                            arguments: snapshot.data![index].id,
+                          );
+                        },
+                      );
+                    },
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
           ],
         ),
       ),

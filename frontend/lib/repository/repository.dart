@@ -22,7 +22,7 @@ abstract class NotebookRepository {
 
   Future<void> deleteNotebook(String notebookId);
 
-  Stream<List<Notebook>> getNotebooks();
+  Future<List<Notebook>> getNotebooksForUser(String uid);
 
   // TODO: Implementing retrieving and updating notebook content remotely
   // https://github.com/funwithflutter/google-docs-clone-flutter/blob/master/lib/components/document/state/document_controller.dart
