@@ -6,6 +6,7 @@ class Notebook extends Equatable {
   final String id;
   final String title;
   final List content;
+
   const Notebook({
     required this.id,
     this.title = 'Untitled',

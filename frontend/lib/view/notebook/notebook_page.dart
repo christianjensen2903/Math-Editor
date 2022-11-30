@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:frontend/model/notebook.dart';
+import 'package:frontend/view/notebook/widgets/block_widget.dart';
 import 'package:frontend/view_model/notebook_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -43,21 +44,25 @@ class _NotebookPageState extends State<NotebookPage> {
               }
 
               return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Notebook Page'),
-                    QuillToolbar.basic(
-                        controller: _notebookViewModel.controller),
-                    Expanded(
-                      child: Container(
-                        child: QuillEditor.basic(
-                          controller: _notebookViewModel.controller,
-                          readOnly: false, // true for view only mode
-                        ),
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Notebook Page'),
+                      // QuillToolbar.basic(
+                      //     controller: _notebookViewModel.controller),
+                      BlockWidget(controller: _notebookViewModel.controller!),
+                      BlockWidget(
+                        controller: _notebookViewModel.controller,
                       ),
-                    ),
-                  ],
+                    ]
+                        .map((e) => Padding(
+                              child: e,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                            ))
+                        .toList(),
+                  ),
                 ),
               );
             },
