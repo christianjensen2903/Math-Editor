@@ -92,4 +92,20 @@ class NotebookRepositoryImpl implements NotebookRepository {
 
     return notebooks;
   }
+
+  // Subscribe to notebook content
+  @override
+  Stream<DeltaData> subscribeToNotebookContent(String notebookId) {
+    return Ref()
+        .databaseSpecificNotebookContent(notebookId)
+        .onValue
+        .map((event) {
+      final snapshot = event.snapshot;
+      if (snapshot.value != null) {
+        return DeltaData.fromMap(snapshot.value as Map<String, dynamic>);
+      } else {
+        throw Exception('Notebook content is null');
+      }
+    });
+  }
 }

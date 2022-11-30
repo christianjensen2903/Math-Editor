@@ -6,7 +6,7 @@ class DeltaData extends Equatable {
   final String user;
 
   /// String json Representation of delta
-  final String delta;
+  final List delta;
   final String deviceId;
 
   const DeltaData({
@@ -17,7 +17,7 @@ class DeltaData extends Equatable {
 
   DeltaData copyWith({
     String? user,
-    String? delta,
+    List? delta,
     String? deviceId,
   }) {
     return DeltaData(
@@ -38,7 +38,7 @@ class DeltaData extends Equatable {
   factory DeltaData.fromMap(Map<String, dynamic> map) {
     return DeltaData(
       user: map['user'] ?? '',
-      delta: map['delta'] ?? '',
+      delta: List.from(map['delta'] ?? []),
       deviceId: map['deviceId'] ?? '',
     );
   }

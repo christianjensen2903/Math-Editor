@@ -27,7 +27,6 @@ class NotebookViewModel extends ChangeNotifier {
   final _deviceId = UniqueKey().toString();
 
   bool isLoaded() {
-    print(_notebook);
     return _controller != null;
   }
 
@@ -49,19 +48,9 @@ class NotebookViewModel extends ChangeNotifier {
 
       _document = quillDoc;
 
-      quillController.addListener(_quillControllerUpdate);
-
       _controller = quillController;
 
-      documentListener = _document?.changes.listen((event) {
-        final delta = event.item2;
-        final source = event.item3;
-
-        if (source != ChangeSource.LOCAL) {
-          return;
-        }
-        _broadcastDeltaUpdate(delta);
-      });
+      _listenForChanges();
     } catch (e) {
       print(e);
     }
@@ -70,6 +59,8 @@ class NotebookViewModel extends ChangeNotifier {
   }
 
   void _listenForChanges() {
+    _controller?.addListener(_quillControllerUpdate);
+
     _controller?.document.changes.listen((event) {
       final delta = event.item2;
       final source = event.item3;
@@ -78,6 +69,20 @@ class NotebookViewModel extends ChangeNotifier {
         return;
       }
       _broadcastDeltaUpdate(delta);
+    });
+
+    // Listen for database changes
+    realtimeListener = Repository()
+        .notebook
+        .subscribeToNotebookContent(_notebook!.id)
+        .listen((data) {
+      if (data.deviceId != _deviceId) {
+        final delta = Delta.fromJson(data.delta);
+        _controller?.compose(
+            delta,
+            _controller?.selection ?? const TextSelection.collapsed(offset: 0),
+            ChangeSource.REMOTE);
+      }
     });
   }
 
@@ -94,7 +99,7 @@ class NotebookViewModel extends ChangeNotifier {
             DeltaData(
                 user: currentUserUid,
                 deviceId: _deviceId,
-                delta: jsonEncode(delta.toJson())))
+                delta: delta.toJson()))
         .then((value) {
       _isSavedRemotely = true;
       notifyListeners();

@@ -27,6 +27,8 @@ abstract class NotebookRepository {
   // TODO: Implementing retrieving and updating notebook content remotely
   // https://github.com/funwithflutter/google-docs-clone-flutter/blob/master/lib/components/document/state/document_controller.dart
   Future<void> updateNotebookContent(String notebookId, DeltaData deltaData);
+
+  Stream<DeltaData> subscribeToNotebookContent(String notebookId);
 }
 
 class Repository {
