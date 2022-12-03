@@ -1,4 +1,4 @@
-import 'package:flutter_quill/flutter_quill.dart';
+import 'package:frontend/model/block.dart';
 import 'package:frontend/model/delta_data.dart';
 import 'package:frontend/model/notebook.dart';
 import 'package:frontend/repository/ref.dart';
@@ -12,22 +12,23 @@ class NotebookRepositoryImpl implements NotebookRepository {
       throw Exception('Not logged in');
     }
 
+    // Create notebook
     final notebookId = Ref().databaseNotebooks.push().key;
     if (notebookId == null) {
       throw Exception('Notebook ID is null');
     }
+
+    // Create initial block
+    final block = await createBlock(notebookId, BlockType.code);
+
+    // Set initial notebook data
     final notebook = Notebook(
       id: notebookId,
+      blocks: [block.id],
     );
-
     await Ref().databaseSpecificNotebook(notebookId).set(notebook.toMap());
 
-    await Ref().databaseSpecificNotebookContent(notebookId).set({
-      'content': null,
-      'user': null,
-      'deviceId': null,
-    });
-
+    // Add notebook to user's list of notebooks
     await Ref()
         .databaseNotebookOverviewForUser(Repository().auth.currentUserUid()!)
         .child(notebookId)
@@ -39,8 +40,14 @@ class NotebookRepositoryImpl implements NotebookRepository {
   @override
   Future<void> deleteNotebook(String notebookId) async {
     await Ref().databaseSpecificNotebook(notebookId).remove();
-    await Ref().databaseSpecificNotebookContent(notebookId).remove();
-    // Delete notebook from user's notebook overview ?
+
+    await Ref()
+        .databaseNotebookOverviewForUser(Repository().auth.currentUserUid()!)
+        .child(notebookId)
+        .remove();
+
+    await Ref().databaseBlocksForNotebook(notebookId).remove();
+    // Delete notebook from other user's notebook overview ?
   }
 
   @override
@@ -49,10 +56,8 @@ class NotebookRepositoryImpl implements NotebookRepository {
   }
 
   @override
-  Future<void> updateNotebookContent(String notebookId, DeltaData deltaData) {
-    return Ref()
-        .databaseSpecificNotebookContent(notebookId)
-        .update(deltaData.toMap());
+  Future<void> updateBlockContent(String blockId, DeltaData deltaData) {
+    return Ref().databaseBlockDeltaForBlock(blockId).update(deltaData.toMap());
   }
 
   @override
@@ -95,17 +100,56 @@ class NotebookRepositoryImpl implements NotebookRepository {
 
   // Subscribe to notebook content
   @override
-  Stream<DeltaData> subscribeToNotebookContent(String notebookId) {
-    return Ref()
-        .databaseSpecificNotebookContent(notebookId)
-        .onValue
-        .map((event) {
+  Stream<DeltaData> subscribeToBlockDelta(String blockId) {
+    return Ref().databaseBlockDeltaForBlock(blockId).onValue.map((event) {
       final snapshot = event.snapshot;
       if (snapshot.value != null) {
         return DeltaData.fromMap(snapshot.value as Map<String, dynamic>);
       } else {
-        throw Exception('Notebook content is null');
+        return DeltaData(user: '', delta: [], deviceId: '');
       }
     });
+  }
+
+  @override
+  Future<Block> createBlock(String notebookId, BlockType type) async {
+    // Create block
+    final blockId = Ref().databaseBlocksForNotebook(notebookId).push().key;
+    if (blockId == null) {
+      throw Exception('Block ID is null');
+    }
+    final block = Block(
+      id: blockId,
+      type: type,
+    );
+
+    // Set block values
+    await Ref().databaseSpecificBlock(blockId).set(block.toMap());
+
+    // Create block delta
+    await Ref().databaseBlockDeltaForBlock(blockId).update({});
+
+    return block;
+  }
+
+  @override
+  Future<void> deleteBlock(String notebookId, String blockId) {
+    // TODO: implement deleteBlock
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateBlock(Block block) async {
+    Ref().databaseSpecificBlock(block.id).update(block.toMap());
+  }
+
+  @override
+  Future<Block> getBlock(String blockId) async {
+    final snapshot = await Ref().databaseSpecificBlock(blockId).get();
+    if (snapshot.exists) {
+      return Block.fromMap(snapshot.value as Map<String, dynamic>, blockId);
+    } else {
+      throw Exception('Block does not exist');
+    }
   }
 }

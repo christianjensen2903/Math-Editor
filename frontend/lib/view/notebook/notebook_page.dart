@@ -39,32 +39,28 @@ class _NotebookPageState extends State<NotebookPage> {
           create: (_) => _notebookViewModel,
           child: Consumer<NotebookViewModel>(
             builder: (context, value, child) {
-              if (!_notebookViewModel.isLoaded()) {
+              if (!_notebookViewModel.isLoaded) {
                 return const Center(child: CircularProgressIndicator());
               }
 
               return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Notebook Page'),
-                      // QuillToolbar.basic(
-                      //     controller: _notebookViewModel.controller),
-                      BlockWidget(controller: _notebookViewModel.controller!),
-                      BlockWidget(
-                        controller: _notebookViewModel.controller,
+                  child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    for (final block in _notebookViewModel.blocks)
+                      Column(
+                        children: [
+                          BlockWidget(
+                            controller:
+                                _notebookViewModel.blockControllers[block.id]!,
+                          ),
+                        ],
                       ),
-                    ]
-                        .map((e) => Padding(
-                              child: e,
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                            ))
-                        .toList(),
-                  ),
+                  ],
                 ),
-              );
+              ));
             },
           )),
     );
