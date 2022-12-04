@@ -47,10 +47,12 @@ class NotebookViewModel extends ChangeNotifier {
   }
 
   Future<void> _loadBlocks() async {
-    final _blocksIds = _notebook!.blocks;
+    final blockIds = _notebook!.blocks;
+
+    print(blockIds);
 
     // Retrieve blocks from repository
-    _blocks = await Future.wait(_blocksIds.map((blockId) async {
+    _blocks = await Future.wait(blockIds.map((blockId) async {
       final block = await Repository().notebook.getBlock(blockId);
       return block;
     }).toList());
@@ -78,6 +80,16 @@ class NotebookViewModel extends ChangeNotifier {
 
   void _listenForBlockChanges() {
     _blockControllers.forEach((blockId, blockController) {
+      // Listen for remote changes
+      // TODO: This is not working
+      Repository().notebook.subscribeToBlockDelta(blockId).listen((data) {
+        if (data.deviceId != _deviceId) {
+          final delta = Delta.fromJson(data.delta);
+          blockController.compose(
+              delta, blockController.selection, ChangeSource.REMOTE);
+        }
+      });
+
       // Listen for local changes and broadcast them
       blockController.document.changes.listen((event) {
         final delta = event.item2;
@@ -87,15 +99,6 @@ class NotebookViewModel extends ChangeNotifier {
           return;
         }
         _broadcastDeltaUpdate(delta, blockId);
-      });
-
-      // Listen for remote changes
-      Repository().notebook.subscribeToBlockDelta(blockId).listen((data) {
-        if (data.deviceId != _deviceId) {
-          final delta = Delta.fromJson(data.delta);
-          blockController.compose(
-              delta, blockController.selection, ChangeSource.REMOTE);
-        }
       });
     });
 
@@ -159,5 +162,18 @@ class NotebookViewModel extends ChangeNotifier {
         content: blockController.document.toDelta().toJson(),
         type: block.type));
     _isSavedRemotely = true;
+  }
+
+  Future<void> createBlock(BlockType type, int index) async {
+    final block =
+        await Repository().notebook.createBlock(_notebook!.id, type, index);
+    _blocks.add(block);
+    final blockController = QuillController(
+      document: Document()..insert(0, ''),
+      selection: const TextSelection.collapsed(offset: 0),
+    );
+    _blockControllers[block.id] = blockController;
+    _listenForBlockChanges();
+    notifyListeners();
   }
 }

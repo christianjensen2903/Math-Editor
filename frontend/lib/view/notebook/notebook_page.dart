@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
+import 'package:frontend/model/block.dart';
 import 'package:frontend/model/notebook.dart';
 import 'package:frontend/view/notebook/widgets/block_widget.dart';
 import 'package:frontend/view_model/notebook_view_model.dart';
@@ -49,12 +50,20 @@ class _NotebookPageState extends State<NotebookPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    for (final block in _notebookViewModel.blocks)
+                    for (var i = 0; i < _notebookViewModel.blocks.length; i++)
                       Column(
                         children: [
                           BlockWidget(
-                            controller:
-                                _notebookViewModel.blockControllers[block.id]!,
+                            controller: _notebookViewModel.blockControllers[
+                                _notebookViewModel.blocks[i].id]!,
+                          ),
+                          // Button to add a new block
+                          TextButton(
+                            onPressed: () {
+                              _notebookViewModel.createBlock(
+                                  BlockType.text, i + 1);
+                            },
+                            child: const Text('Add block'),
                           ),
                         ],
                       ),

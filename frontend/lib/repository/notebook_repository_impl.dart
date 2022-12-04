@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:frontend/model/block.dart';
 import 'package:frontend/model/delta_data.dart';
 import 'package:frontend/model/notebook.dart';
@@ -19,7 +20,7 @@ class NotebookRepositoryImpl implements NotebookRepository {
     }
 
     // Create initial block
-    final block = await createBlock(notebookId, BlockType.code);
+    final block = await createBlock(notebookId, BlockType.code, 0);
 
     // Set initial notebook data
     final notebook = Notebook(
@@ -106,13 +107,14 @@ class NotebookRepositoryImpl implements NotebookRepository {
       if (snapshot.value != null) {
         return DeltaData.fromMap(snapshot.value as Map<String, dynamic>);
       } else {
-        return DeltaData(user: '', delta: [], deviceId: '');
+        return const DeltaData(user: '', delta: [], deviceId: '');
       }
     });
   }
 
   @override
-  Future<Block> createBlock(String notebookId, BlockType type) async {
+  Future<Block> createBlock(
+      String notebookId, BlockType type, int index) async {
     // Create block
     final blockId = Ref().databaseBlocksForNotebook(notebookId).push().key;
     if (blockId == null) {
@@ -128,6 +130,23 @@ class NotebookRepositoryImpl implements NotebookRepository {
 
     // Create block delta
     await Ref().databaseBlockDeltaForBlock(blockId).update({});
+
+    // Get the current list of blocks
+    final event =
+        await Ref().databaseSpecificNotebook(notebookId).child("blocks").once();
+
+    late final blocks;
+    if (event.snapshot.value != null) {
+      blocks = event.snapshot.value as List<dynamic>;
+    } else {
+      blocks = <String>[];
+    }
+
+    // Add the new block to the list at the specified index
+    blocks.insert(index, blockId);
+
+    // Set the updated list of blocks in the database
+    Ref().databaseSpecificNotebook(notebookId).child("blocks").set(blocks);
 
     return block;
   }

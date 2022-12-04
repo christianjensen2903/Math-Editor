@@ -25,7 +25,7 @@ abstract class NotebookRepository {
 
   Future<Block> getBlock(String blockId);
 
-  Future<Block> createBlock(String notebookId, BlockType type);
+  Future<Block> createBlock(String notebookId, BlockType type, int index);
 
   Future<void> updateBlock(Block block);
 
