@@ -8,6 +8,8 @@ import 'package:frontend/view/notebook/widgets/block_widget.dart';
 import 'package:frontend/view_model/notebook_view_model.dart';
 import 'package:provider/provider.dart';
 
+import 'widgets/new_block_buttons.dart';
+
 class NotebookPage extends StatefulWidget {
   final Future<Notebook> notebook;
 
@@ -53,43 +55,14 @@ class _NotebookPageState extends State<NotebookPage> {
                     for (var i = 0; i < _notebookViewModel.blocks.length; i++)
                       Column(
                         children: [
+                          const SizedBox(height: 40),
                           BlockWidget(
                             controller: _notebookViewModel.blockControllers[
                                 _notebookViewModel.blocks[i].id]!,
                           ),
                           const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  _notebookViewModel.createBlock(
-                                      BlockType.text, i + 1);
-                                },
-                                child: const Text('Text'),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  _notebookViewModel.createBlock(
-                                      BlockType.code, i + 1);
-                                },
-                                child: const Text('Code'),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  _notebookViewModel.createBlock(
-                                      BlockType.math, i + 1);
-                                },
-                                child: const Text('Math'),
-                              ),
-                            ],
-                          ),
+                          NewBlockButtons(
+                              notebookViewModel: _notebookViewModel, i: i),
                         ],
                       ),
                   ],
