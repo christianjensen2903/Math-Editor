@@ -101,11 +101,30 @@ class NotebookRepositoryImpl implements NotebookRepository {
 
   // Subscribe to notebook content
   @override
-  Stream<DeltaData> subscribeToBlockDelta(String blockId) {
+  Future<Stream<DeltaData>> subscribeToBlockDelta(String blockId) async {
+    final initialSnapshot =
+        await Ref().databaseBlockDeltaForBlock(blockId).get();
+
+    late final DeltaData initialDeltaData;
+    if (initialSnapshot.value != null) {
+      initialDeltaData =
+          DeltaData.fromMap(initialSnapshot.value as Map<String, dynamic>);
+    } else {
+      initialDeltaData = const DeltaData(user: '', delta: [], deviceId: '');
+    }
+
     return Ref().databaseBlockDeltaForBlock(blockId).onValue.map((event) {
       final snapshot = event.snapshot;
+
       if (snapshot.value != null) {
-        return DeltaData.fromMap(snapshot.value as Map<String, dynamic>);
+        final newDeltaData =
+            DeltaData.fromMap(snapshot.value as Map<String, dynamic>);
+
+        if (newDeltaData != initialDeltaData) {
+          return newDeltaData;
+        } else {
+          return const DeltaData(user: '', delta: [], deviceId: '');
+        }
       } else {
         return const DeltaData(user: '', delta: [], deviceId: '');
       }

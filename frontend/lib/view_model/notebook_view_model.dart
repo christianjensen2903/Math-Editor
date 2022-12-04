@@ -49,8 +49,6 @@ class NotebookViewModel extends ChangeNotifier {
   Future<void> _loadBlocks() async {
     final blockIds = _notebook!.blocks;
 
-    print(blockIds);
-
     // Retrieve blocks from repository
     _blocks = await Future.wait(blockIds.map((blockId) async {
       final block = await Repository().notebook.getBlock(blockId);
@@ -78,11 +76,13 @@ class NotebookViewModel extends ChangeNotifier {
     _listenForBlockChanges();
   }
 
-  void _listenForBlockChanges() {
-    _blockControllers.forEach((blockId, blockController) {
+  Future<void> _listenForBlockChanges() async {
+    _blockControllers.forEach((blockId, blockController) async {
       // Listen for remote changes
-      // TODO: This is not working
-      Repository().notebook.subscribeToBlockDelta(blockId).listen((data) {
+      final realtimeListener =
+          await Repository().notebook.subscribeToBlockDelta(blockId);
+
+      realtimeListener.listen((data) {
         if (data.deviceId != _deviceId) {
           final delta = Delta.fromJson(data.delta);
           blockController.compose(

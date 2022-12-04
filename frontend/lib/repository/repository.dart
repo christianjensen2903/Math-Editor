@@ -33,7 +33,7 @@ abstract class NotebookRepository {
 
   Future<List<Notebook>> getNotebooksForUser(String uid);
 
-  Stream<DeltaData> subscribeToBlockDelta(String blockId);
+  Future<Stream<DeltaData>> subscribeToBlockDelta(String blockId);
 
   Future<void> updateBlockContent(String blockId, DeltaData deltaData);
 }
