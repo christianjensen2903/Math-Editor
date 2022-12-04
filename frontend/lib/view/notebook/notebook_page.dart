@@ -57,13 +57,38 @@ class _NotebookPageState extends State<NotebookPage> {
                             controller: _notebookViewModel.blockControllers[
                                 _notebookViewModel.blocks[i].id]!,
                           ),
-                          // Button to add a new block
-                          TextButton(
-                            onPressed: () {
-                              _notebookViewModel.createBlock(
-                                  BlockType.text, i + 1);
-                            },
-                            child: const Text('Add block'),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  _notebookViewModel.createBlock(
+                                      BlockType.text, i + 1);
+                                },
+                                child: const Text('Text'),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  _notebookViewModel.createBlock(
+                                      BlockType.code, i + 1);
+                                },
+                                child: const Text('Code'),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  _notebookViewModel.createBlock(
+                                      BlockType.math, i + 1);
+                                },
+                                child: const Text('Math'),
+                              ),
+                            ],
                           ),
                         ],
                       ),
