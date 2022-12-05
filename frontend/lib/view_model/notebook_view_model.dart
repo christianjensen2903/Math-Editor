@@ -8,6 +8,7 @@ import 'package:frontend/model/notebook.dart';
 import 'package:frontend/repository/firebase_auth.dart';
 import 'package:frontend/repository/repository.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Block;
+import 'package:math_keyboard/math_keyboard.dart';
 
 class NotebookViewModel extends ChangeNotifier {
   bool _isSavedRemotely = false;
@@ -17,6 +18,8 @@ class NotebookViewModel extends ChangeNotifier {
   List<Block> _blocks = [];
 
   List<Block> get blocks => _blocks;
+
+  MathFieldEditingController? _mathFieldController;
 
   // Controller for each block
   Map<String, QuillController> _blockControllers = {};

@@ -59,6 +59,7 @@ class _NotebookPageState extends State<NotebookPage> {
                           BlockWidget(
                             controller: _notebookViewModel.blockControllers[
                                 _notebookViewModel.blocks[i].id]!,
+                            type: _notebookViewModel.blocks[i].type,
                           ),
                           const SizedBox(height: 20),
                           NewBlockButtons(
