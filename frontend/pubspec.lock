@@ -22,6 +22,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.7.0"
+  appflowy_editor:
+    dependency: "direct main"
+    description:
+      name: appflowy_editor
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.7"
+  appflowy_editor_plugins:
+    dependency: "direct main"
+    description:
+      path: "packages/appflowy_editor_plugins"
+      relative: true
+    source: path
+    version: "0.0.1"
+  archive:
+    dependency: transitive
+    description:
+      name: archive
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.3.5"
   args:
     dependency: transitive
     description:
@@ -92,6 +113,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.2"
+  csslib:
+    dependency: transitive
+    description:
+      name: csslib
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.17.2"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -99,6 +127,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
+  dart_style:
+    dependency: transitive
+    description:
+      name: dart_style
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.4"
   device_info_plus:
     dependency: transitive
     description:
@@ -279,6 +314,11 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_math_fork:
     dependency: "direct main"
     description:
@@ -324,6 +364,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  highlight:
+    dependency: transitive
+    description:
+      name: highlight
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.0"
+  html:
+    dependency: transitive
+    description:
+      name: html
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.15.1"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.13.5"
   http_parser:
     dependency: transitive
     description:
@@ -345,6 +406,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.17.0"
+  intl_utils:
+    dependency: transitive
+    description:
+      name: intl_utils
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.7.0"
   js:
     dependency: transitive
     description:
@@ -359,6 +427,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  logging:
+    dependency: transitive
+    description:
+      name: logging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
+  markdown:
+    dependency: transitive
+    description:
+      name: markdown
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.0.1"
   matcher:
     dependency: transitive
     description:
@@ -450,6 +532,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.3"
+  pointycastle:
+    dependency: transitive
+    description:
+      name: pointycastle
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.6.2"
   provider:
     dependency: "direct main"
     description:
@@ -471,6 +560,62 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
+  rich_clipboard:
+    dependency: transitive
+    description:
+      name: rich_clipboard
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  rich_clipboard_android:
+    dependency: transitive
+    description:
+      name: rich_clipboard_android
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  rich_clipboard_ios:
+    dependency: transitive
+    description:
+      name: rich_clipboard_ios
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  rich_clipboard_linux:
+    dependency: transitive
+    description:
+      name: rich_clipboard_linux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  rich_clipboard_macos:
+    dependency: transitive
+    description:
+      name: rich_clipboard_macos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  rich_clipboard_platform_interface:
+    dependency: transitive
+    description:
+      name: rich_clipboard_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  rich_clipboard_web:
+    dependency: transitive
+    description:
+      name: rich_clipboard_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  rich_clipboard_windows:
+    dependency: transitive
+    description:
+      name: rich_clipboard_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -615,7 +760,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.1"
+    version: "2.7.0"
   xml:
     dependency: transitive
     description:

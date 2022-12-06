@@ -1,3 +1,4 @@
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/utils/constants.dart';
@@ -33,6 +34,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [
+        AppFlowyEditorLocalizations.delegate,
+      ],
       title: 'MathNote',
       theme: ThemeData(
         primarySwatch: Colors.blue,
