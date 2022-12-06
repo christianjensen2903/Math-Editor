@@ -1,4 +1,3 @@
-import 'package:frontend/model/block.dart';
 import 'package:frontend/model/delta_data.dart';
 import 'package:frontend/repository/firebase_auth.dart';
 import 'package:frontend/model/notebook.dart';
@@ -23,19 +22,11 @@ abstract class NotebookRepository {
 
   Future<void> deleteNotebook(String notebookId);
 
-  Future<Block> getBlock(String blockId);
+  Future<void> updateNotebookDelta(String notebookId, DeltaData deltaData);
 
-  Future<Block> createBlock(String notebookId, BlockType type, int index);
-
-  Future<void> updateBlock(Block block);
-
-  Future<void> deleteBlock(String notebookId, String blockId);
+  Future<Stream<DeltaData>> subscribeToNotebook(String notebookId);
 
   Future<List<Notebook>> getNotebooksForUser(String uid);
-
-  Future<Stream<DeltaData>> subscribeToBlockDelta(String blockId);
-
-  Future<void> updateBlockContent(String blockId, DeltaData deltaData);
 }
 
 class Repository {

@@ -3,8 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 String REF_USER = 'users';
 String REF_NOTEBOOK = 'notebooks';
 String REF_NOTEBOOK_OVERVIEW = 'notebook_overview';
-String REF_BLOCKS = 'blocks';
-String REF_BLOCK_DELTA = 'block_delta';
+String REF_NOTEBOOK_DELTA = 'notebook_delta';
 
 class Ref {
   final DatabaseReference _databaseRoot = FirebaseDatabase.instance.ref();
@@ -21,24 +20,15 @@ class Ref {
   DatabaseReference databaseSpecificNotebook(String notebookId) =>
       _databaseRoot.child(REF_NOTEBOOK).child(notebookId);
 
-  DatabaseReference get dataabaseNotebookBlocks =>
-      _databaseRoot.child(REF_BLOCKS);
-
-  DatabaseReference databaseBlocksForNotebook(String notebookId) =>
-      _databaseRoot.child(REF_NOTEBOOK).child(notebookId).child(REF_BLOCKS);
-
-  DatabaseReference databaseSpecificBlock(String blockId) =>
-      _databaseRoot.child(REF_BLOCKS).child(blockId);
-
   DatabaseReference get databaseNotebookOverview =>
       _databaseRoot.child(REF_NOTEBOOK_OVERVIEW);
 
   DatabaseReference databaseNotebookOverviewForUser(String uid) =>
       _databaseRoot.child(REF_NOTEBOOK_OVERVIEW).child(uid);
 
-  DatabaseReference databaseBlockDelta() =>
-      _databaseRoot.child(REF_BLOCK_DELTA);
+  DatabaseReference get databaseNotebookDelta =>
+      _databaseRoot.child(REF_NOTEBOOK_DELTA);
 
-  DatabaseReference databaseBlockDeltaForBlock(String blockId) =>
-      _databaseRoot.child(REF_BLOCK_DELTA).child(blockId);
+  DatabaseReference databaseNotebookDeltaForNotebook(String notebookId) =>
+      _databaseRoot.child(REF_NOTEBOOK_DELTA).child(notebookId);
 }

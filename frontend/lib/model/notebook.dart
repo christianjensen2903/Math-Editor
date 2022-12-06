@@ -4,21 +4,18 @@ import 'dart:convert';
 class Notebook extends Equatable {
   final String id;
   final String title;
-  final List content;
-  final List<String> blocks;
+  final String content;
 
   const Notebook({
     required this.id,
     this.title = 'Untitled',
-    this.content = const [],
-    this.blocks = const [],
+    this.content = '',
   });
 
   Map<String, dynamic> toMap() {
     return {
       'title': title,
       'content': content,
-      'blocks': blocks,
     };
   }
 
@@ -26,8 +23,7 @@ class Notebook extends Equatable {
     return Notebook(
       id: id,
       title: map['title'] ?? 'Untitled',
-      content: List.from(map['content'] ?? []),
-      blocks: List.from(map['blocks'] ?? []),
+      content: map['content'] ?? '',
     );
   }
 
